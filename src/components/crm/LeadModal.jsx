@@ -24,12 +24,32 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data) => {
+    mutationFn: async (data) => {
+      let result;
       if (lead?.id) {
-        return base44.entities.Lead.update(lead.id, data);
+        result = await base44.entities.Lead.update(lead.id, data);
+        
+        // Se mudou o status, registrar no histórico
+        if (lead.status !== data.status) {
+          await base44.entities.HistoricoStatus.create({
+            lead_id: lead.id,
+            status: data.status,
+            data_mudanca: new Date().toISOString(),
+            vendedor: data.vendedor
+          });
+        }
       } else {
-        return base44.entities.Lead.create(data);
+        result = await base44.entities.Lead.create(data);
+        
+        // Registrar status inicial no histórico
+        await base44.entities.HistoricoStatus.create({
+          lead_id: result.id,
+          status: data.status || 'Lead',
+          data_mudanca: new Date().toISOString(),
+          vendedor: data.vendedor
+        });
       }
+      return result;
     },
     onSuccess: () => {
       onSave();

@@ -18,7 +18,20 @@ export default function PipelineKanban({ leads, onRefetch, onEdit }) {
   const [draggedId, setDraggedId] = React.useState(null);
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, status }) => base44.entities.Lead.update(id, { status }),
+    mutationFn: async ({ id, status }) => {
+      const lead = leads.find(l => l.id === id);
+      await base44.entities.Lead.update(id, { status });
+      
+      // Registrar mudança de status no histórico
+      await base44.entities.HistoricoStatus.create({
+        lead_id: id,
+        status: status,
+        data_mudanca: new Date().toISOString(),
+        vendedor: lead?.vendedor
+      });
+      
+      return { id, status };
+    },
     onSuccess: () => {
       onRefetch();
     },
