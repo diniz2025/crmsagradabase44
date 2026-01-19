@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
   Users, 
-  BarChart3, 
+  BarChart3,
+  TrendingUp,
   Kanban, 
   Settings,
   Plus,
@@ -21,6 +22,7 @@ import {
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
 import KPICards from "../components/crm/KPICards";
+import DashboardDetalhado from "../components/crm/DashboardDetalhado";
 import ConfigCRM from "../components/crm/ConfigCRM";
 import LeadModal from "../components/crm/LeadModal";
 import AutomacoesConfig from "../components/crm/AutomacoesConfig";
@@ -33,7 +35,7 @@ import ManualVendedor from "../components/crm/ManualVendedor";
 import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
 
 export default function CRM() {
-  const [activeTab, setActiveTab] = useState("tabela");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [showModal, setShowModal] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
   const [filtro, setFiltro] = useState("");
@@ -79,6 +81,13 @@ export default function CRM() {
     queryFn: () => base44.entities.Corretora.list(),
     initialData: [],
     staleTime: 300000, // 5 minutos de cache
+  });
+
+  const { data: historico = [] } = useQuery({
+    queryKey: ['historico'],
+    queryFn: () => base44.entities.HistoricoStatus.list('-data_mudanca', 5000),
+    initialData: [],
+    staleTime: 60000,
   });
 
   // Pega o usuário atual
@@ -232,12 +241,15 @@ export default function CRM() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <KPICards leads={filteredLeads} />
 
         <div className="bg-white rounded-xl shadow-lg mt-8">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <div className="border-b px-6 pt-6">
               <TabsList className="bg-gray-100">
+                <TabsTrigger value="dashboard" className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Dashboard
+                </TabsTrigger>
                 <TabsTrigger value="tabela" className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   Tabela
@@ -272,6 +284,15 @@ export default function CRM() {
                 )}
               </TabsList>
             </div>
+
+            <TabsContent value="dashboard" className="p-6">
+              <DashboardDetalhado 
+                leads={filteredLeads}
+                vendedores={vendedores}
+                corretoras={corretoras}
+                historico={historico}
+              />
+            </TabsContent>
 
             <TabsContent value="tabela" className="p-6">
               <div className="mb-6 flex gap-4">
