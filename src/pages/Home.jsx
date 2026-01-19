@@ -34,9 +34,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-green-800 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#4DBABC] via-[#5AC0C2] to-[#45B1B3] text-white">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'url(https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1600)',
@@ -53,26 +53,26 @@ export default function Home() {
             className="text-center lg:text-left lg:flex lg:items-center lg:justify-between"
           >
             <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <Badge className="mb-6 bg-amber-500 hover:bg-amber-600 text-white border-none text-sm px-4 py-2">
+              <Badge className="mb-6 bg-[#FF6B35] hover:bg-[#E85A28] text-white border-none text-sm px-4 py-2">
                 <MapPin className="w-4 h-4 mr-2" />
                 Osasco e Região
               </Badge>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Plano de Saúde para seu
-                <span className="block text-amber-400">Negócio de Alimentação</span>
+                <span className="block text-[#FF6B35]">Negócio de Alimentação</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
                 Proteja você e sua equipe com o Plano Sagrada Família
               </p>
 
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20 inline-block">
-                <p className="text-sm text-blue-100 mb-2">A partir de apenas</p>
+                <p className="text-sm text-white/80 mb-2">A partir de apenas</p>
                 <div className="flex items-baseline">
-                  <span className="text-5xl md:text-6xl font-bold text-amber-400">R$ 235</span>
-                  <span className="text-3xl text-amber-400">,09</span>
-                  <span className="text-xl text-blue-100 ml-2">/mês</span>
+                  <span className="text-5xl md:text-6xl font-bold text-[#FF6B35]">R$ 235</span>
+                  <span className="text-3xl text-[#FF6B35]">,09</span>
+                  <span className="text-xl text-white/90 ml-2">/mês</span>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ export default function Home() {
                 <Button 
                   size="lg"
                   onClick={scrollToForm}
-                  className="bg-amber-500 hover:bg-amber-600 text-white text-lg px-8 py-6 rounded-xl shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 transform hover:scale-105"
+                  className="bg-[#FF6B35] hover:bg-[#E85A28] text-white text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-[#FF6B35]/50 transition-all duration-300 transform hover:scale-105"
                 >
                   Contratar Agora
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -90,7 +90,7 @@ export default function Home() {
                   size="lg"
                   variant="outline"
                   onClick={scrollToForm}
-                  className="bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 text-lg px-8 py-6 rounded-xl backdrop-blur-sm"
+                  className="bg-white hover:bg-white/90 text-[#4DBABC] border-2 border-white text-lg px-8 py-6 rounded-full"
                 >
                   <Phone className="mr-2 w-5 h-5" />
                   Falar com Consultor
@@ -107,12 +107,12 @@ export default function Home() {
               >
                 <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="bg-amber-500 rounded-full p-4">
+                    <div className="bg-[#FF6B35] rounded-full p-4">
                       <ChefHat className="w-8 h-8 text-white" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold">Especializado em</h3>
-                      <p className="text-blue-100">Bares & Restaurantes</p>
+                      <p className="text-white/80">Bares & Restaurantes</p>
                     </div>
                   </div>
                   
@@ -124,19 +124,19 @@ export default function Home() {
                       "Cobertura completa"
                     ].map((item, index) => (
                       <div key={index} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <CheckCircle2 className="w-5 h-5 text-[#FF6B35] flex-shrink-0" />
                         <span className="text-white">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="absolute -bottom-6 -right-6 bg-green-500 rounded-2xl p-4 shadow-xl">
+                <div className="absolute -bottom-6 -right-6 bg-[#FF6B35] rounded-2xl p-4 shadow-xl">
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-white fill-white" />
                     <div>
                       <div className="text-2xl font-bold text-white">4.9</div>
-                      <div className="text-xs text-green-100">Avaliação</div>
+                      <div className="text-xs text-white/80">Avaliação</div>
                     </div>
                   </div>
                 </div>
@@ -147,7 +147,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white shadow-lg relative z-10">
+      <section className="py-16 bg-gray-50 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -164,7 +164,7 @@ export default function Home() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <stat.icon className="w-10 h-10 mx-auto mb-3 text-blue-600" />
+                <stat.icon className="w-10 h-10 mx-auto mb-3 text-[#4DBABC]" />
                 <div className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
                 <div className="text-sm text-gray-600">{stat.label}</div>
               </motion.div>
@@ -180,19 +180,19 @@ export default function Home() {
       <ComoFunciona />
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 to-green-800 text-white">
+      <section className="py-20 bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Stethoscope className="w-16 h-16 mx-auto mb-6 text-amber-400" />
+          <Stethoscope className="w-16 h-16 mx-auto mb-6 text-[#FF6B35]" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Pronto para Proteger seu Negócio?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-white/90 mb-8">
             Junte-se a centenas de estabelecimentos em Osasco que já confiam no Sagrada Família
           </p>
           <Button 
             size="lg"
             onClick={scrollToForm}
-            className="bg-amber-500 hover:bg-amber-600 text-white text-lg px-12 py-6 rounded-xl shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 transform hover:scale-105"
+            className="bg-[#FF6B35] hover:bg-[#E85A28] text-white text-lg px-12 py-6 rounded-full shadow-2xl hover:shadow-[#FF6B35]/50 transition-all duration-300 transform hover:scale-105"
           >
             Solicitar Contato
             <ArrowRight className="ml-2 w-5 h-5" />
@@ -201,7 +201,7 @@ export default function Home() {
       </section>
 
       {/* Formulário */}
-      <section id="formulario-contato" className="py-20 bg-gray-50">
+      <section id="formulario-contato" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FormularioContato mostrar={mostrarFormulario} />
         </div>
@@ -213,7 +213,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
               <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                <Heart className="w-5 h-5 text-amber-400" />
+                <Heart className="w-5 h-5 text-[#FF6B35]" />
                 Sagrada Família
               </h3>
               <p className="text-sm">
