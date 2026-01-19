@@ -82,6 +82,7 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
           <TableHeader>
             <TableRow className="bg-gray-50">
               <TableHead className="font-semibold">Nome/Empresa</TableHead>
+              <TableHead className="font-semibold">Score</TableHead>
               <TableHead className="font-semibold">CNPJ</TableHead>
               <TableHead className="font-semibold">Cidade</TableHead>
               <TableHead className="font-semibold">Telefone</TableHead>
@@ -99,6 +100,20 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
                     <div className="font-medium">{lead.nome_completo}</div>
                     {lead.contato && (
                       <div className="text-sm text-gray-500">{lead.contato}</div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {lead.score !== undefined && lead.score !== null ? (
+                      <div className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
+                        lead.score >= 80 ? 'bg-green-100 text-green-800' :
+                        lead.score >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                        lead.score >= 40 ? 'bg-orange-100 text-orange-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {lead.score}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">-</span>
                     )}
                   </TableCell>
                   <TableCell className="text-sm">{lead.cnpj || '-'}</TableCell>
