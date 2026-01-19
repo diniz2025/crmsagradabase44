@@ -11,6 +11,7 @@ import { Plus, Trash2, Save, Users, MessageSquare } from "lucide-react";
 export default function ConfigCRM({ vendedores }) {
   const [novoVendedor, setNovoVendedor] = useState('');
   const [script, setScript] = useState('');
+  const [scriptSagradaFamilia, setScriptSagradaFamilia] = useState('');
   
   const queryClient = useQueryClient();
 
@@ -24,6 +25,22 @@ export default function ConfigCRM({ vendedores }) {
     const scriptConfig = configs.find(c => c.chave === 'script_whatsapp');
     if (scriptConfig) {
       setScript(scriptConfig.valor);
+    }
+    
+    const scriptSagradaConfig = configs.find(c => c.chave === 'script_sagrada_familia');
+    if (scriptSagradaConfig) {
+      setScriptSagradaFamilia(scriptSagradaConfig.valor);
+    } else {
+      setScriptSagradaFamilia(`O Plano de Saúde Sagrada Família é uma conquista especialmente projetada para as empresas representadas pelo SinHoRes Osasco - Sindicato Patronal de Osasco, Alphaville e Região.
+
+Este plano foi desenvolvido pensando nas necessidades específicas do setor de bares, restaurantes e hospitalidade, oferecendo:
+
+✅ Cobertura completa com R$ 235,09/mês
+✅ Rede credenciada em Osasco e região
+✅ Atendimento 24/7
+✅ Sem carência para emergências
+
+É um benefício exclusivo conquistado pelo sindicato para valorizar e proteger os empresários e colaboradores do nosso setor!`);
     }
   }, [configs]);
 
@@ -57,6 +74,21 @@ export default function ConfigCRM({ vendedores }) {
     },
   });
 
+  const saveScriptSagradaFamiliaMutation = useMutation({
+    mutationFn: async (texto) => {
+      const existing = configs.find(c => c.chave === 'script_sagrada_familia');
+      if (existing) {
+        return base44.entities.ConfigCRM.update(existing.id, { valor: texto });
+      } else {
+        return base44.entities.ConfigCRM.create({ chave: 'script_sagrada_familia', valor: texto });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['configs']);
+      alert('Script Sagrada Família salvo com sucesso!');
+    },
+  });
+
   const handleAddVendedor = () => {
     if (novoVendedor.trim()) {
       addVendedorMutation.mutate(novoVendedor.trim());
@@ -67,8 +99,13 @@ export default function ConfigCRM({ vendedores }) {
     saveScriptMutation.mutate(script);
   };
 
+  const handleSaveScriptSagradaFamilia = () => {
+    saveScriptSagradaFamiliaMutation.mutate(scriptSagradaFamilia);
+  };
+
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="space-y-6">
+      <div className="grid md:grid-cols-2 gap-6">
       <Card className="shadow-lg">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-green-50">
           <CardTitle className="flex items-center gap-2">
@@ -146,6 +183,43 @@ export default function ConfigCRM({ vendedores }) {
             >
               <Save className="w-4 h-4 mr-2" />
               {saveScriptMutation.isPending ? 'Salvando...' : 'Salvar Script'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      </div>
+
+      <Card className="shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50">
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-[#FF6B35]" />
+            Script Sagrada Família
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="scriptSagrada">Texto sobre o produto Sagrada Família</Label>
+              <Textarea
+                id="scriptSagrada"
+                value={scriptSagradaFamilia}
+                onChange={(e) => setScriptSagradaFamilia(e.target.value)}
+                placeholder="Informações sobre o plano Sagrada Família..."
+                rows={12}
+                className="font-mono text-sm"
+              />
+              <p className="text-xs text-gray-500">
+                Script informativo sobre a conquista do SinHoRes Osasco para os vendedores
+              </p>
+            </div>
+
+            <Button 
+              onClick={handleSaveScriptSagradaFamilia} 
+              disabled={saveScriptSagradaFamiliaMutation.isPending}
+              className="w-full bg-[#FF6B35] hover:bg-[#E85A28]"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {saveScriptSagradaFamiliaMutation.isPending ? 'Salvando...' : 'Salvar Script Sagrada Família'}
             </Button>
           </div>
         </CardContent>
