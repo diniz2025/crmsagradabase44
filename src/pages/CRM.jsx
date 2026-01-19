@@ -19,6 +19,8 @@ import PipelineKanban from "../components/crm/PipelineKanban";
 import KPICards from "../components/crm/KPICards";
 import ConfigCRM from "../components/crm/ConfigCRM";
 import LeadModal from "../components/crm/LeadModal";
+import AutomacoesConfig from "../components/crm/AutomacoesConfig";
+import ProcessadorAutomacoes from "../components/crm/ProcessadorAutomacoes";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -122,6 +124,7 @@ export default function CRM() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ProcessadorAutomacoes />
       <div className="bg-gradient-to-r from-blue-900 to-green-800 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
@@ -229,8 +232,9 @@ export default function CRM() {
               />
             </TabsContent>
 
-            <TabsContent value="config" className="p-6">
+            <TabsContent value="config" className="p-6 space-y-6">
               <ConfigCRM vendedores={vendedores} />
+              <AutomacoesConfig />
             </TabsContent>
           </Tabs>
         </div>
