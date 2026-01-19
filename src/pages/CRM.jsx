@@ -30,6 +30,7 @@ import ChatbotVendedor from "../components/crm/ChatbotVendedor";
 import GestaoCorretoras from "../components/crm/GestaoCorretoras";
 import DistribuicaoLotes from "../components/crm/DistribuicaoLotes";
 import ManualVendedor from "../components/crm/ManualVendedor";
+import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -41,22 +42,43 @@ export default function CRM() {
   const [filtroCorretora, setFiltroCorretora] = useState("");
   const [usuarioAtual, setUsuarioAtual] = useState(null);
 
-  const { data: leads = [], isLoading, refetch } = useQuery({
-    queryKey: ['leads'],
-    queryFn: () => base44.entities.Lead.list('-updated_date', 5000),
+  // Query otimizada com filtro no servidor e limite
+  const { data: leads = [], isLoading, refetch, error } = useQuery({
+    queryKey: ['leads', filtroStatus, filtroCorretora, minhaCorretoraId, meuVendedor?.nome],
+    queryFn: async () => {
+      const query = {};
+      
+      // Aplica filtros no servidor para reduzir dados trafegados
+      if (!isAdmin) {
+        if (isSupervisor && minhaCorretoraId) {
+          query.corretora_id = minhaCorretoraId;
+        } else if (meuVendedor) {
+          query.vendedor = meuVendedor.nome;
+        }
+      }
+      
+      if (filtroStatus) query.status = filtroStatus;
+      if (filtroCorretora && isAdmin) query.corretora_id = filtroCorretora;
+      
+      return base44.entities.Lead.filter(query, '-updated_date', 1000);
+    },
     initialData: [],
+    staleTime: 30000, // Cache de 30s
+    refetchInterval: 60000, // Auto-refresh a cada 60s
   });
 
   const { data: vendedores = [] } = useQuery({
     queryKey: ['vendedores'],
-    queryFn: () => base44.entities.Vendedor.list(),
+    queryFn: () => base44.entities.Vendedor.list('-created_date', 500),
     initialData: [],
+    staleTime: 300000, // 5 minutos de cache
   });
 
   const { data: corretoras = [] } = useQuery({
     queryKey: ['corretoras'],
     queryFn: () => base44.entities.Corretora.list(),
     initialData: [],
+    staleTime: 300000, // 5 minutos de cache
   });
 
   // Pega o usuário atual
@@ -128,42 +150,42 @@ export default function CRM() {
   };
 
   const handleClearAll = async () => {
+    if (!isAdmin) {
+      alert('Apenas administradores podem limpar a base');
+      return;
+    }
+    
     if (!confirm('Tem certeza que deseja excluir TODOS os leads? Esta ação não pode ser desfeita.')) {
       return;
     }
     
-    for (const lead of leads) {
-      await base44.entities.Lead.delete(lead.id);
+    try {
+      // Deleta em lotes de 100 para evitar timeout
+      const BATCH_SIZE = 100;
+      for (let i = 0; i < leads.length; i += BATCH_SIZE) {
+        const batch = leads.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(lead => base44.entities.Lead.delete(lead.id)));
+      }
+      refetch();
+      alert('Base limpa com sucesso');
+    } catch (error) {
+      alert('Erro ao limpar base: ' + error.message);
     }
-    refetch();
   };
 
-  const filteredLeads = leads.filter(lead => {
-    const searchMatch = filtro === '' || 
-      (lead.nome_completo || '').toLowerCase().includes(filtro.toLowerCase()) ||
-      (lead.cidade || '').toLowerCase().includes(filtro.toLowerCase()) ||
-      (lead.telefone || '').toLowerCase().includes(filtro.toLowerCase());
-    
-    const statusMatch = !filtroStatus || lead.status === filtroStatus;
-    const vendedorMatch = !filtroVendedor || lead.vendedor === filtroVendedor;
-    const corretoraMatch = !filtroCorretora || lead.corretora_id === filtroCorretora;
-
-    // Controle de permissões
-    if (!isAdmin) {
-      if (isSupervisor) {
-        // Supervisor vê apenas leads da sua corretora
-        if (lead.corretora_id !== minhaCorretoraId) return false;
-      } else if (meuVendedor) {
-        // Vendedor vê apenas seus próprios leads
-        if (lead.vendedor !== meuVendedor.nome) return false;
-      } else {
-        // Sem permissão
-        return false;
-      }
-    }
-    
-    return searchMatch && statusMatch && vendedorMatch && corretoraMatch;
-  });
+  // Filtragem otimizada - apenas busca e vendedor (status e corretora já filtrados no servidor)
+  const filteredLeads = React.useMemo(() => {
+    return leads.filter(lead => {
+      const searchMatch = filtro === '' || 
+        (lead.nome_completo || '').toLowerCase().includes(filtro.toLowerCase()) ||
+        (lead.cidade || '').toLowerCase().includes(filtro.toLowerCase()) ||
+        (lead.telefone || '').toLowerCase().includes(filtro.toLowerCase());
+      
+      const vendedorMatch = !filtroVendedor || lead.vendedor === filtroVendedor;
+      
+      return searchMatch && vendedorMatch;
+    });
+  }, [leads, filtro, filtroVendedor]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -193,11 +215,16 @@ export default function CRM() {
                 </Button>
                 <input type="file" accept=".csv" onChange={handleImport} className="hidden" />
               </label>
-              {leads.length > 0 && (
+              {isAdmin && leads.length > 0 && (
                 <Button onClick={handleClearAll} variant="outline" className="bg-red-500/20 hover:bg-red-500/30 border-red-300 text-white">
                   <Trash2 className="w-4 h-4 mr-2" />
                   Limpar Base
                 </Button>
+              )}
+              {error && (
+                <div className="text-red-300 text-sm">
+                  Erro ao carregar dados
+                </div>
               )}
             </div>
           </div>
@@ -308,6 +335,7 @@ export default function CRM() {
             </TabsContent>
 
             <TabsContent value="config" className="p-6 space-y-6">
+              {isAdmin && <GuiaEscalabilidade />}
               <LeadScoringEngine />
               <ConfigCRM vendedores={vendedores} />
               <AutomacoesConfig />
