@@ -24,7 +24,40 @@ export default function FormularioContato({ mostrar }) {
   const [enviado, setEnviado] = useState(false);
 
   const criarLeadMutation = useMutation({
-    mutationFn: (data) => base44.entities.Lead.create(data),
+    mutationFn: async (data) => {
+      const lead = await base44.entities.Lead.create(data);
+      
+      // Enviar email para dcgseguros@gmail.com
+      const emailBody = `
+Nova solicitação de plano de saúde recebida!
+
+Nome/Empresa: ${data.nome_completo}
+Telefone: ${data.telefone}
+Email: ${data.email}
+Tipo de Estabelecimento: ${data.tipo_estabelecimento || 'Não informado'}
+Cidade: ${data.cidade}
+Número de Funcionários: ${data.numero_funcionarios || 'Não informado'}
+Observações: ${data.observacoes || 'Nenhuma'}
+
+Entre em contato com o cliente o mais breve possível!
+      `.trim();
+
+      await base44.integrations.Core.SendEmail({
+        from_name: "Site Sagrada Família",
+        to: "dcgseguros@gmail.com",
+        subject: `Novo Lead: ${data.nome_completo}`,
+        body: emailBody
+      });
+
+      await base44.integrations.Core.SendEmail({
+        from_name: "Site Sagrada Família",
+        to: "seguros@sinhoresosasco.com.br",
+        subject: `Novo Lead: ${data.nome_completo}`,
+        body: emailBody
+      });
+
+      return lead;
+    },
     onSuccess: () => {
       setEnviado(true);
       setTimeout(() => {
