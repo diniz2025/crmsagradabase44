@@ -12,7 +12,8 @@ import {
   Plus,
   Download,
   Upload,
-  Trash2
+  Trash2,
+  MessageCircle
 } from "lucide-react";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
@@ -22,6 +23,7 @@ import LeadModal from "../components/crm/LeadModal";
 import AutomacoesConfig from "../components/crm/AutomacoesConfig";
 import ProcessadorAutomacoes from "../components/crm/ProcessadorAutomacoes";
 import LeadScoringEngine from "../components/crm/LeadScoringEngine";
+import ChatbotVendedor from "../components/crm/ChatbotVendedor";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -181,6 +183,10 @@ export default function CRM() {
                   <Settings className="w-4 h-4" />
                   Configurações
                 </TabsTrigger>
+                <TabsTrigger value="chatbot" className="flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4" />
+                  Assistente IA
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -237,6 +243,10 @@ export default function CRM() {
               <LeadScoringEngine />
               <ConfigCRM vendedores={vendedores} />
               <AutomacoesConfig />
+            </TabsContent>
+
+            <TabsContent value="chatbot" className="p-6">
+              <ChatbotVendedor />
             </TabsContent>
           </Tabs>
         </div>
