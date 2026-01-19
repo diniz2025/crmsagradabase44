@@ -21,6 +21,7 @@ import ConfigCRM from "../components/crm/ConfigCRM";
 import LeadModal from "../components/crm/LeadModal";
 import AutomacoesConfig from "../components/crm/AutomacoesConfig";
 import ProcessadorAutomacoes from "../components/crm/ProcessadorAutomacoes";
+import LeadScoringEngine from "../components/crm/LeadScoringEngine";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -233,6 +234,7 @@ export default function CRM() {
             </TabsContent>
 
             <TabsContent value="config" className="p-6 space-y-6">
+              <LeadScoringEngine />
               <ConfigCRM vendedores={vendedores} />
               <AutomacoesConfig />
             </TabsContent>

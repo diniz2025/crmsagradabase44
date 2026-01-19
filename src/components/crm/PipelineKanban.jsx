@@ -82,9 +82,21 @@ export default function PipelineKanban({ leads, onRefetch, onEdit }) {
                   onClick={() => onEdit(lead)}
                 >
                   <CardContent className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {lead.nome_completo}
-                    </h3>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">
+                        {lead.nome_completo}
+                      </h3>
+                      {lead.score !== undefined && lead.score !== null && (
+                        <div className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold ${
+                          lead.score >= 80 ? 'bg-green-500 text-white' :
+                          lead.score >= 60 ? 'bg-yellow-500 text-white' :
+                          lead.score >= 40 ? 'bg-orange-500 text-white' :
+                          'bg-red-500 text-white'
+                        }`}>
+                          {lead.score}
+                        </div>
+                      )}
+                    </div>
                     
                     {lead.vendedor && (
                       <p className="text-xs text-gray-500 mb-2">
