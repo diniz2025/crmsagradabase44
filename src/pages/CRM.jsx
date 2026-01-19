@@ -44,6 +44,32 @@ export default function CRM() {
   const [filtroCorretora, setFiltroCorretora] = useState("");
   const [usuarioAtual, setUsuarioAtual] = useState(null);
 
+  // Pega o usuário atual
+  React.useEffect(() => {
+    base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
+  }, []);
+
+  // Busca vendedores e corretoras primeiro
+  const { data: vendedores = [] } = useQuery({
+    queryKey: ['vendedores'],
+    queryFn: () => base44.entities.Vendedor.list('-created_date', 500),
+    initialData: [],
+    staleTime: 300000, // 5 minutos de cache
+  });
+
+  const { data: corretoras = [] } = useQuery({
+    queryKey: ['corretoras'],
+    queryFn: () => base44.entities.Corretora.list(),
+    initialData: [],
+    staleTime: 300000, // 5 minutos de cache
+  });
+
+  // Verifica permissões
+  const isAdmin = usuarioAtual?.email === 'cristino@example.com' || usuarioAtual?.email === 'vanessa@example.com';
+  const meuVendedor = vendedores.find(v => v.email === usuarioAtual?.email);
+  const isSupervisor = meuVendedor?.tipo === 'supervisor';
+  const minhaCorretoraId = meuVendedor?.corretora_id;
+
   // Query otimizada com filtro no servidor e limite
   const { data: leads = [], isLoading, refetch, error } = useQuery({
     queryKey: ['leads', filtroStatus, filtroCorretora, minhaCorretoraId, meuVendedor?.nome],
@@ -67,20 +93,7 @@ export default function CRM() {
     initialData: [],
     staleTime: 30000, // Cache de 30s
     refetchInterval: 60000, // Auto-refresh a cada 60s
-  });
-
-  const { data: vendedores = [] } = useQuery({
-    queryKey: ['vendedores'],
-    queryFn: () => base44.entities.Vendedor.list('-created_date', 500),
-    initialData: [],
-    staleTime: 300000, // 5 minutos de cache
-  });
-
-  const { data: corretoras = [] } = useQuery({
-    queryKey: ['corretoras'],
-    queryFn: () => base44.entities.Corretora.list(),
-    initialData: [],
-    staleTime: 300000, // 5 minutos de cache
+    enabled: vendedores.length > 0, // Só executa após carregar vendedores
   });
 
   const { data: historico = [] } = useQuery({
@@ -89,17 +102,6 @@ export default function CRM() {
     initialData: [],
     staleTime: 60000,
   });
-
-  // Pega o usuário atual
-  React.useEffect(() => {
-    base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
-  }, []);
-
-  // Verifica permissões
-  const isAdmin = usuarioAtual?.email === 'cristino@example.com' || usuarioAtual?.email === 'vanessa@example.com';
-  const meuVendedor = vendedores.find(v => v.email === usuarioAtual?.email);
-  const isSupervisor = meuVendedor?.tipo === 'supervisor';
-  const minhaCorretoraId = meuVendedor?.corretora_id;
 
   const handleEdit = (lead) => {
     setEditingLead(lead);
