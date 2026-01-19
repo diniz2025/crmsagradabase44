@@ -10,6 +10,7 @@ import { Plus, Trash2, Save, Users, MessageSquare } from "lucide-react";
 
 export default function ConfigCRM({ vendedores }) {
   const [novoVendedor, setNovoVendedor] = useState('');
+  const [novoVendedorEmail, setNovoVendedorEmail] = useState('');
   const [script, setScript] = useState('');
   const [scriptSagradaFamilia, setScriptSagradaFamilia] = useState('');
   
@@ -45,10 +46,11 @@ Este plano foi desenvolvido pensando nas necessidades específicas do setor de b
   }, [configs]);
 
   const addVendedorMutation = useMutation({
-    mutationFn: (nome) => base44.entities.Vendedor.create({ nome, ativo: true }),
+    mutationFn: (data) => base44.entities.Vendedor.create({ ...data, ativo: true }),
     onSuccess: () => {
       queryClient.invalidateQueries(['vendedores']);
       setNovoVendedor('');
+      setNovoVendedorEmail('');
     },
   });
 
@@ -90,8 +92,11 @@ Este plano foi desenvolvido pensando nas necessidades específicas do setor de b
   });
 
   const handleAddVendedor = () => {
-    if (novoVendedor.trim()) {
-      addVendedorMutation.mutate(novoVendedor.trim());
+    if (novoVendedor.trim() && novoVendedorEmail.trim()) {
+      addVendedorMutation.mutate({ 
+        nome: novoVendedor.trim(), 
+        email: novoVendedorEmail.trim() 
+      });
     }
   };
 
@@ -115,16 +120,24 @@ Este plano foi desenvolvido pensando nas necessidades específicas do setor de b
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex gap-2">
+            <div className="space-y-2">
               <Input
                 placeholder="Nome do vendedor"
                 value={novoVendedor}
                 onChange={(e) => setNovoVendedor(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddVendedor()}
               />
-              <Button onClick={handleAddVendedor} disabled={addVendedorMutation.isPending}>
-                <Plus className="w-4 h-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Email do vendedor"
+                  value={novoVendedorEmail}
+                  onChange={(e) => setNovoVendedorEmail(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddVendedor()}
+                />
+                <Button onClick={handleAddVendedor} disabled={addVendedorMutation.isPending}>
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -135,7 +148,10 @@ Este plano foi desenvolvido pensando nas necessidades específicas do setor de b
               ) : (
                 vendedores.map(v => (
                   <div key={v.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <span className="font-medium">{v.nome}</span>
+                    <div>
+                      <div className="font-medium">{v.nome}</div>
+                      <div className="text-xs text-gray-500">{v.email}</div>
+                    </div>
                     <Button
                       variant="ghost"
                       size="sm"
