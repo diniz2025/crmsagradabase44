@@ -4,104 +4,62 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Hospital, Search, MessageCircle, Mail, MapPin } from "lucide-react";
+import { Hospital, Search, MapPin, Phone, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
-const redeCredenciada = {
-  osasco: [
-    { nome: "Hospital e Maternidade Cruz Azul", tipo: "Hospital", endereco: "Av. dos Autonomistas, 1896 - Osasco", telefone: "(11) 3651-2000" },
-    { nome: "Hospital Cruzeiro do Sul", tipo: "Hospital", endereco: "Rua Cristiano Viana, 505 - Osasco", telefone: "(11) 3677-2000" },
-    { nome: "Hospital Santa Catarina", tipo: "Hospital", endereco: "Av. Paulista, 200 - Osasco", telefone: "(11) 3040-6000" },
-    { nome: "Clínica São Camilo", tipo: "Clínica", endereco: "Av. Getúlio Vargas, 1950 - Osasco", telefone: "(11) 3682-5000" },
-    { nome: "Laboratório Fleury Osasco", tipo: "Laboratório", endereco: "Av. dos Autonomistas, 4780 - Osasco", telefone: "(11) 3512-8000" },
-    { nome: "Centro Médico ABC Osasco", tipo: "Clínica", endereco: "Rua Primitiva Vianco, 80 - Osasco", telefone: "(11) 3699-3000" },
-    { nome: "Clínica Mais Vida", tipo: "Clínica", endereco: "Av. Presidente Kennedy, 567 - Osasco", telefone: "(11) 3681-4500" },
-    { nome: "Pronto Socorro Municipal", tipo: "Pronto Socorro", endereco: "Av. das Nações Unidas, 1000 - Osasco", telefone: "(11) 3651-1234" },
-    { nome: "Laboratório Sabin Osasco", tipo: "Laboratório", endereco: "Av. dos Autonomistas, 5555 - Osasco", telefone: "(11) 3685-9000" },
-    { nome: "Hospital São Francisco", tipo: "Hospital", endereco: "Rua Rui Barbosa, 255 - Osasco", telefone: "(11) 3654-7000" },
-    { nome: "Centro Médico Santa Helena", tipo: "Clínica", endereco: "Av. João Barreto de Menezes, 1000 - Osasco", telefone: "(11) 3683-2100" },
-    { nome: "Clínica Integrada Vida Plena", tipo: "Clínica", endereco: "Rua Marechal Rondon, 789 - Osasco", telefone: "(11) 3688-5500" }
-  ],
-  barueri: [
-    { nome: "Hospital Santa Marcelina Barueri", tipo: "Hospital", endereco: "Av. Henriqueta Mendes Guerra, 1000 - Barueri", telefone: "(11) 4198-0000" },
-    { nome: "Hospital Assunção", tipo: "Hospital", endereco: "Av. Sebastião Davidade dos Santos, 343 - Barueri", telefone: "(11) 4198-8000" },
-    { nome: "Clínica MedCenter Barueri", tipo: "Clínica", endereco: "Calçada das Margaridas, 163 - Barueri", telefone: "(11) 4191-3000" }
-  ],
-  carapicuiba: [
-    { nome: "Hospital Geral de Carapicuíba", tipo: "Hospital", endereco: "Av. Deputado Emílio Carlos, 3100 - Carapicuíba", telefone: "(11) 4164-5300" },
-    { nome: "UPA Carapicuíba", tipo: "Pronto Socorro", endereco: "Rua Américo Vespúcio, 625 - Carapicuíba", telefone: "(11) 4164-0700" },
-    { nome: "Clínica Popular Carapicuíba", tipo: "Clínica", endereco: "Av. Inocêncio Seráfico, 5252 - Carapicuíba", telefone: "(11) 4183-6600" }
-  ],
-  saopaulo: [
-    { nome: "Hospital Sírio-Libanês", tipo: "Hospital", endereco: "Rua Dona Adma Jafet, 91 - São Paulo", telefone: "(11) 3155-1000" },
-    { nome: "Hospital Albert Einstein", tipo: "Hospital", endereco: "Av. Albert Einstein, 627 - São Paulo", telefone: "(11) 2151-1233" },
-    { nome: "Hospital Oswaldo Cruz", tipo: "Hospital", endereco: "Rua Treze de Maio, 1815 - São Paulo", telefone: "(11) 3549-0000" },
-    { nome: "Hospital Santa Catarina", tipo: "Hospital", endereco: "Av. Paulista, 200 - São Paulo", telefone: "(11) 3040-6000" },
-    { nome: "Hospital São Luiz Itaim", tipo: "Hospital", endereco: "Rua Dr. Alceu de Campos Rodrigues, 95 - São Paulo", telefone: "(11) 3040-3000" },
-    { nome: "Hospital Samaritano", tipo: "Hospital", endereco: "Rua Conselheiro Brotero, 1486 - São Paulo", telefone: "(11) 3821-5300" },
-    { nome: "Hospital 9 de Julho", tipo: "Hospital", endereco: "Rua Peixoto Gomide, 625 - São Paulo", telefone: "(11) 3147-9000" },
-    { nome: "Hospital Beneficência Portuguesa", tipo: "Hospital", endereco: "Rua Maestro Cardim, 769 - São Paulo", telefone: "(11) 3505-1000" },
-    { nome: "Hospital Santa Paula", tipo: "Hospital", endereco: "Av. Santo Amaro, 2468 - São Paulo", telefone: "(11) 3040-8000" },
-    { nome: "Laboratório Fleury Paulista", tipo: "Laboratório", endereco: "Av. Paulista, 1159 - São Paulo", telefone: "(11) 3179-0822" },
-    { nome: "Laboratório Delboni Auriemo", tipo: "Laboratório", endereco: "Av. Brigadeiro Luís Antônio, 3684 - São Paulo", telefone: "(11) 3047-4000" },
-    { nome: "Laboratório Sabin São Paulo", tipo: "Laboratório", endereco: "Av. Paulista, 2064 - São Paulo", telefone: "(11) 3170-9500" },
-    { nome: "Centro Médico Paraíso", tipo: "Clínica", endereco: "Rua Vergueiro, 2949 - São Paulo", telefone: "(11) 5084-5000" },
-    { nome: "Clínica Lavoisier", tipo: "Clínica", endereco: "Rua Cincinato Braga, 282 - São Paulo", telefone: "(11) 3145-3600" },
-    { nome: "Hospital San Paolo", tipo: "Hospital", endereco: "Rua Napoleão de Barros, 715 - São Paulo", telefone: "(11) 5576-4000" }
-  ]
-};
+const redeHospitalar = [
+  {
+    nome: "Hospital São Francisco - Unidade São Roque",
+    endereco: "Av. Getúlio Vargas, 911 - São Roque - SP",
+    cep: "18130-430",
+    servicos: ["Hospital Geral", "P.S Adulto", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSaoFranciscoSaoRoque"
+  },
+  {
+    nome: "Hospital São Francisco - Unidade Cotia",
+    endereco: "Av. Prof. Manoel José Pedroso, 701 - Cotia - SP",
+    cep: "06717-100",
+    servicos: ["Hospital Geral", "P.S Adulto", "P.S Infantil", "Maternidade", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSaoFranciscoCotia"
+  },
+  {
+    nome: "Hospital São Francisco - Unidade Osasco",
+    endereco: "Rua Padre Damaso, 100 - Centro - Osasco - SP",
+    cep: "06016-010",
+    servicos: ["Hospital Geral", "P.S Adulto", "P.S Infantil", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSaoFranciscoOsasco"
+  },
+  {
+    nome: "Hospital Sagrada Família - Unidade Vila Formosa Z/L",
+    endereco: "Rua Arapoca, 128 - Vila Formosa - São Paulo - SP",
+    cep: "03362-000",
+    servicos: ["Hospital Geral", "P.S Adulto", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSagradaFamiliaVF"
+  },
+  {
+    nome: "Hospital Sagrada Família Kids - Unidade Vila Formosa Z/L",
+    endereco: "Rua Arapoca, 128 - Vila Formosa - São Paulo - SP",
+    cep: "03362-000",
+    servicos: ["Hospital Geral Infantil", "P.S Infantil", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSagradaFamiliaKids"
+  },
+  {
+    nome: "Hospital Sagrada Família - Unidade Mauá",
+    endereco: "Rua Vicente Aletto, 31 - Jd Anchieta - Mauá - SP",
+    cep: "09360-540",
+    servicos: ["Hospital Geral", "P.S Adulto", "Consultas Ambulatoriais", "Exames Laboratoriais e Imagens"],
+    mapsUrl: "https://goo.gl/maps/HospitalSagradaFamiliaMaua"
+  }
+];
 
 export default function RedeCredenciada() {
   const [busca, setBusca] = useState("");
-  const [cidadeSelecionada, setCidadeSelecionada] = useState("osasco");
 
-  const todasRedes = Object.entries(redeCredenciada).flatMap(([cidade, unidades]) =>
-    unidades.map(u => ({ ...u, cidade }))
+  const hospitaisFiltrados = redeHospitalar.filter(hospital =>
+    hospital.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    hospital.endereco.toLowerCase().includes(busca.toLowerCase()) ||
+    hospital.servicos.some(s => s.toLowerCase().includes(busca.toLowerCase()))
   );
-
-  const redesFiltradas = todasRedes.filter(unidade =>
-    unidade.nome.toLowerCase().includes(busca.toLowerCase()) ||
-    unidade.tipo.toLowerCase().includes(busca.toLowerCase()) ||
-    unidade.cidade.toLowerCase().includes(busca.toLowerCase())
-  );
-
-  const getResumoTexto = (cidade) => {
-    const redes = cidade === "saopaulo" 
-      ? redeCredenciada.saopaulo 
-      : [...(redeCredenciada.osasco || []), ...(redeCredenciada.barueri || []), ...(redeCredenciada.carapicuiba || [])];
-    
-    const hospitais = redes.filter(r => r.tipo === "Hospital");
-    const clinicas = redes.filter(r => r.tipo === "Clínica");
-    const laboratorios = redes.filter(r => r.tipo === "Laboratório");
-    
-    const titulo = cidade === "saopaulo" ? "SÃO PAULO" : "OSASCO E REGIÃO";
-    
-    return `🏥 REDE CREDENCIADA SAGRADA FAMÍLIA - ${titulo}
-
-📍 HOSPITAIS (${hospitais.length}):
-${hospitais.map((h, i) => `${i + 1}. ${h.nome}`).join('\n')}
-
-🏥 CLÍNICAS E CENTROS MÉDICOS (${clinicas.length}):
-${clinicas.map((c, i) => `${i + 1}. ${c.nome}`).join('\n')}
-
-🔬 LABORATÓRIOS (${laboratorios.length}):
-${laboratorios.map((l, i) => `${i + 1}. ${l.nome}`).join('\n')}
-
-💙 Plano Sagrada Família - R$ 235,09/mês
-Quer mais informações? Entre em contato!`;
-  };
-
-  const enviarWhatsApp = (cidade) => {
-    const texto = getResumoTexto(cidade);
-    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
-  };
-
-  const enviarEmail = (cidade) => {
-    const texto = getResumoTexto(cidade);
-    const subject = `Rede Credenciada Sagrada Família - ${cidade === 'saopaulo' ? 'São Paulo' : 'Osasco e Região'}`;
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(texto)}`;
-  };
 
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50">
@@ -113,193 +71,133 @@ Quer mais informações? Entre em contato!`;
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Rede Credenciada Completa
+            Rede Hospitalar Referenciada
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Hospitais, clínicas e laboratórios de qualidade em Osasco, região e São Paulo
+            Hospitais de qualidade credenciados ao Plano Sagrada Família
           </p>
+          <div className="mt-4 text-sm text-gray-500">
+            <p>📞 Contato: (11) 2424-9180</p>
+            <p>📧 atendimento1@sagradafamiliasaude.com.br</p>
+            <p>🌐 www.sagradafamiliasaude.com.br</p>
+          </div>
         </motion.div>
-
-        {/* Botões de compartilhamento */}
-        <div className="mb-8 flex flex-wrap justify-center gap-4">
-          <Card className="p-6 bg-gradient-to-br from-green-50 to-blue-50">
-            <h3 className="font-bold text-lg mb-4 text-center">Enviar Rede Resumida</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Osasco e Região:</p>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => enviarWhatsApp('osasco')}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                    size="sm"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    WhatsApp
-                  </Button>
-                  <Button
-                    onClick={() => enviarEmail('osasco')}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700"
-                    size="sm"
-                  >
-                    <Mail className="w-4 h-4 mr-1" />
-                    Email
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">São Paulo:</p>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => enviarWhatsApp('saopaulo')}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                    size="sm"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    WhatsApp
-                  </Button>
-                  <Button
-                    onClick={() => enviarEmail('saopaulo')}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700"
-                    size="sm"
-                  >
-                    <Mail className="w-4 h-4 mr-1" />
-                    Email
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
 
         {/* Busca */}
         <div className="mb-8 max-w-2xl mx-auto">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
-              placeholder="Buscar por hospital, clínica ou laboratório..."
+              placeholder="Buscar por hospital ou serviço..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pl-12 h-14 text-lg border-2 border-gray-200 focus:border-blue-500"
+              className="pl-12 h-14 text-lg border-2 border-[#4DBABC] focus:border-[#FF6B35]"
             />
           </div>
         </div>
 
-        {/* Lista de Rede Credenciada */}
-        <Card className="shadow-xl border-none">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-green-600 text-white">
+        {/* Lista de Hospitais */}
+        <Card className="shadow-xl border-none mb-12">
+          <CardHeader className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white">
             <CardTitle className="flex items-center gap-2 text-2xl">
               <Hospital className="w-7 h-7" />
-              Unidades Credenciadas ({redesFiltradas.length})
+              Hospitais Sagrada Família ({hospitaisFiltrados.length})
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <Tabs defaultValue="osasco" className="w-full">
-              <div className="border-b px-6 pt-6">
-                <TabsList className="bg-gray-100">
-                  <TabsTrigger value="osasco">Osasco</TabsTrigger>
-                  <TabsTrigger value="barueri">Barueri</TabsTrigger>
-                  <TabsTrigger value="carapicuiba">Carapicuíba</TabsTrigger>
-                  <TabsTrigger value="saopaulo">São Paulo</TabsTrigger>
-                  <TabsTrigger value="todas">Todas</TabsTrigger>
-                </TabsList>
-              </div>
-
-              {Object.entries(redeCredenciada).map(([cidade, unidades]) => (
-                <TabsContent key={cidade} value={cidade} className="p-6">
-                  <div className="grid gap-4">
-                    {unidades
-                      .filter(u => busca === "" || 
-                        u.nome.toLowerCase().includes(busca.toLowerCase()) ||
-                        u.tipo.toLowerCase().includes(busca.toLowerCase())
-                      )
-                      .map((unidade, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                        >
-                          <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
-                            <CardContent className="p-6">
-                              <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                  <h3 className="font-bold text-lg text-gray-900 mb-2">
-                                    {unidade.nome}
-                                  </h3>
-                                  <div className="space-y-2 text-sm text-gray-600">
-                                    <p className="flex items-center gap-2">
-                                      <MapPin className="w-4 h-4 text-blue-500" />
-                                      {unidade.endereco}
-                                    </p>
-                                    {unidade.telefone && (
-                                      <p className="flex items-center gap-2">
-                                        <span className="text-blue-500">📞</span>
-                                        <a href={`tel:${unidade.telefone}`} className="hover:text-blue-600">
-                                          {unidade.telefone}
-                                        </a>
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
-                                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                                  {unidade.tipo}
-                                </Badge>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))}
-                  </div>
-                </TabsContent>
-              ))}
-
-              <TabsContent value="todas" className="p-6">
-                <div className="grid gap-4">
-                  {redesFiltradas.map((unidade, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.02 }}
-                    >
-                      <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
-                        <CardContent className="p-6">
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <h3 className="font-bold text-lg text-gray-900">
-                                  {unidade.nome}
-                                </h3>
-                                <Badge variant="outline" className="text-xs">
-                                  {unidade.cidade.toUpperCase()}
-                                </Badge>
-                              </div>
-                              <div className="space-y-2 text-sm text-gray-600">
-                                <p className="flex items-center gap-2">
-                                  <MapPin className="w-4 h-4 text-blue-500" />
-                                  {unidade.endereco}
-                                </p>
-                                {unidade.telefone && (
-                                  <p className="flex items-center gap-2">
-                                    <span className="text-blue-500">📞</span>
-                                    <a href={`tel:${unidade.telefone}`} className="hover:text-blue-600">
-                                      {unidade.telefone}
-                                    </a>
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                              {unidade.tipo}
-                            </Badge>
+          <CardContent className="p-6">
+            <div className="grid gap-6">
+              {hospitaisFiltrados.map((hospital, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="hover:shadow-xl transition-all border-l-4 border-l-[#FF6B35]">
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-xl text-gray-900 mb-3">
+                            {hospital.nome}
+                          </h3>
+                          <div className="space-y-2 text-sm text-gray-700">
+                            <p className="flex items-start gap-2">
+                              <MapPin className="w-5 h-5 text-[#4DBABC] flex-shrink-0 mt-0.5" />
+                              <span>{hospital.endereco}<br/>CEP: {hospital.cep}</span>
+                            </p>
                           </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+                        </div>
+                        <Badge className="bg-[#4DBABC] text-white hover:bg-[#45B1B3] border-none">
+                          Hospital
+                        </Badge>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t">
+                        <p className="font-semibold text-gray-700 mb-2">Serviços Disponíveis:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {hospital.servicos.map((servico, idx) => (
+                            <Badge key={idx} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                              {servico}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex gap-3">
+                        <Button
+                          onClick={() => window.open(hospital.mapsUrl, '_blank')}
+                          className="bg-[#4DBABC] hover:bg-[#45B1B3] text-white"
+                          size="sm"
+                        >
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Ver no Mapa
+                        </Button>
+                        <Button
+                          onClick={() => window.open(`tel:1124249180`, '_blank')}
+                          variant="outline"
+                          className="border-[#4DBABC] text-[#4DBABC] hover:bg-[#4DBABC] hover:text-white"
+                          size="sm"
+                        >
+                          <Phone className="w-4 h-4 mr-2" />
+                          (11) 2424-9180
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Informações Adicionais */}
+        <Card className="bg-gradient-to-br from-[#4DBABC]/10 to-[#FF6B35]/10 border-2 border-[#4DBABC]">
+          <CardContent className="p-8 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Rede Credenciada Completa
+            </h3>
+            <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
+              Além dos hospitais acima, o Plano Sagrada Família conta com uma ampla rede de clínicas, laboratórios e centros diagnósticos credenciados em diversas regiões.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button
+                onClick={() => window.open('https://www.sagradafamiliasaude.com.br', '_blank')}
+                className="bg-[#4DBABC] hover:bg-[#45B1B3] text-white"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Acessar Rede Completa
+              </Button>
+              <Button
+                onClick={() => window.open('tel:1124249180')}
+                className="bg-[#FF6B35] hover:bg-[#E55A2A] text-white"
+              >
+                <Phone className="w-4 h-4 mr-2" />
+                Fale Conosco
+              </Button>
+            </div>
+            <p className="text-sm text-gray-600 mt-6">
+              Para consultar a rede completa de clínicas e laboratórios por região, entre em contato conosco ou acesse nosso site oficial.
+            </p>
           </CardContent>
         </Card>
       </div>
