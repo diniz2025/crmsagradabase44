@@ -217,15 +217,21 @@ export default function CRM() {
                 <Download className="w-4 h-4 mr-2" />
                 Exportar
               </Button>
-              <label>
-                <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/30 text-white cursor-pointer" asChild>
-                  <span>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Importar CSV
-                  </span>
-                </Button>
-                <input type="file" accept=".csv" onChange={handleImport} className="hidden" />
-              </label>
+              <Button 
+                variant="outline" 
+                className="bg-white/10 hover:bg-white/20 border-white/30 text-white cursor-pointer"
+                onClick={() => document.getElementById('csv-upload').click()}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Importar CSV
+              </Button>
+              <input 
+                id="csv-upload"
+                type="file" 
+                accept=".csv" 
+                onChange={handleImport} 
+                className="hidden" 
+              />
               {isAdmin && leads.length > 0 && (
                 <Button onClick={handleClearAll} variant="outline" className="bg-red-500/20 hover:bg-red-500/30 border-red-300 text-white">
                   <Trash2 className="w-4 h-4 mr-2" />
