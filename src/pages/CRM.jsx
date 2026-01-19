@@ -127,11 +127,21 @@ export default function CRM() {
 
   const handleImport = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    console.log('Arquivo selecionado:', file);
+    
+    if (!file) {
+      console.log('Nenhum arquivo selecionado');
+      return;
+    }
+    
+    alert('Importando arquivo: ' + file.name);
     
     try {
       const text = await file.text();
+      console.log('Conteúdo do arquivo:', text.substring(0, 200));
+      
       const lines = text.split(/\r?\n/).filter(line => line.trim());
+      console.log('Número de linhas:', lines.length);
       
       if (lines.length < 2) {
         alert('Arquivo CSV vazio ou inválido');
@@ -150,17 +160,18 @@ export default function CRM() {
           if (char === '"') {
             inQuotes = !inQuotes;
           } else if (char === ',' && !inQuotes) {
-            result.push(current.trim());
+            result.push(current.trim().replace(/^"|"$/g, ''));
             current = '';
           } else {
             current += char;
           }
         }
-        result.push(current.trim());
+        result.push(current.trim().replace(/^"|"$/g, ''));
         return result;
       };
 
-      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/["\s]/g, '_'));
+      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/[\s]/g, '_'));
+      console.log('Headers detectados:', headers);
       
       const newLeads = [];
       for (let i = 1; i < lines.length; i++) {
@@ -169,7 +180,7 @@ export default function CRM() {
           nome_completo: values[headers.indexOf('nome_completo')] || values[headers.indexOf('nome')] || values[0] || '',
           cnpj: values[headers.indexOf('cnpj')] || '',
           cidade: values[headers.indexOf('cidade')] || '',
-          telefone: values[headers.indexOf('telefone')] || values[headers.indexOf('fone')] || values[headers.indexOf('telefone')] || '',
+          telefone: values[headers.indexOf('telefone')] || values[headers.indexOf('fone')] || '',
           email: values[headers.indexOf('email')] || '',
           contato: values[headers.indexOf('contato')] || '',
           status: 'Lead',
@@ -177,10 +188,13 @@ export default function CRM() {
           corretora_id: minhaCorretoraId || corretoras[0]?.id || ''
         };
         
-        if (lead.nome_completo) {
+        if (lead.nome_completo && lead.nome_completo.trim()) {
           newLeads.push(lead);
         }
       }
+      
+      console.log('Leads processados:', newLeads.length);
+      console.log('Exemplo de lead:', newLeads[0]);
       
       if (newLeads.length === 0) {
         alert('Nenhum lead válido encontrado no CSV');
@@ -188,17 +202,23 @@ export default function CRM() {
         return;
       }
 
+      alert(`Processando ${newLeads.length} leads...`);
+
       // Importa em lotes de 100
       const BATCH_SIZE = 100;
+      let importados = 0;
+      
       for (let i = 0; i < newLeads.length; i += BATCH_SIZE) {
         const batch = newLeads.slice(i, i + BATCH_SIZE);
         await base44.entities.Lead.bulkCreate(batch);
+        importados += batch.length;
+        console.log(`Importados ${importados}/${newLeads.length} leads`);
       }
       
-      refetch();
+      await refetch();
       alert(`✅ ${newLeads.length} leads importados com sucesso!`);
     } catch (error) {
-      console.error('Erro ao importar:', error);
+      console.error('Erro completo ao importar:', error);
       alert('❌ Erro ao importar CSV: ' + error.message);
     }
     
