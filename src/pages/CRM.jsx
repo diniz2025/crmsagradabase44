@@ -13,7 +13,9 @@ import {
   Download,
   Upload,
   Trash2,
-  MessageCircle
+  MessageCircle,
+  Building2,
+  Package
 } from "lucide-react";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
@@ -24,6 +26,8 @@ import AutomacoesConfig from "../components/crm/AutomacoesConfig";
 import ProcessadorAutomacoes from "../components/crm/ProcessadorAutomacoes";
 import LeadScoringEngine from "../components/crm/LeadScoringEngine";
 import ChatbotVendedor from "../components/crm/ChatbotVendedor";
+import GestaoCorretoras from "../components/crm/GestaoCorretoras";
+import DistribuicaoLotes from "../components/crm/DistribuicaoLotes";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -32,6 +36,8 @@ export default function CRM() {
   const [filtro, setFiltro] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("");
   const [filtroVendedor, setFiltroVendedor] = useState("");
+  const [filtroCorretora, setFiltroCorretora] = useState("");
+  const [usuarioAtual, setUsuarioAtual] = useState(null);
 
   const { data: leads = [], isLoading, refetch } = useQuery({
     queryKey: ['leads'],
@@ -44,6 +50,23 @@ export default function CRM() {
     queryFn: () => base44.entities.Vendedor.list(),
     initialData: [],
   });
+
+  const { data: corretoras = [] } = useQuery({
+    queryKey: ['corretoras'],
+    queryFn: () => base44.entities.Corretora.list(),
+    initialData: [],
+  });
+
+  // Pega o usuário atual
+  React.useEffect(() => {
+    base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
+  }, []);
+
+  // Verifica permissões
+  const isAdmin = usuarioAtual?.email === 'cristino@example.com' || usuarioAtual?.email === 'vanessa@example.com';
+  const meuVendedor = vendedores.find(v => v.email === usuarioAtual?.email);
+  const isSupervisor = meuVendedor?.tipo === 'supervisor';
+  const minhaCorretoraId = meuVendedor?.corretora_id;
 
   const handleEdit = (lead) => {
     setEditingLead(lead);
@@ -121,8 +144,23 @@ export default function CRM() {
     
     const statusMatch = !filtroStatus || lead.status === filtroStatus;
     const vendedorMatch = !filtroVendedor || lead.vendedor === filtroVendedor;
+    const corretoraMatch = !filtroCorretora || lead.corretora_id === filtroCorretora;
+
+    // Controle de permissões
+    if (!isAdmin) {
+      if (isSupervisor) {
+        // Supervisor vê apenas leads da sua corretora
+        if (lead.corretora_id !== minhaCorretoraId) return false;
+      } else if (meuVendedor) {
+        // Vendedor vê apenas seus próprios leads
+        if (lead.vendedor !== meuVendedor.nome) return false;
+      } else {
+        // Sem permissão
+        return false;
+      }
+    }
     
-    return searchMatch && statusMatch && vendedorMatch;
+    return searchMatch && statusMatch && vendedorMatch && corretoraMatch;
   });
 
   return (
@@ -187,6 +225,18 @@ export default function CRM() {
                   <MessageCircle className="w-4 h-4" />
                   Assistente IA
                 </TabsTrigger>
+                {(isAdmin || isSupervisor) && (
+                  <>
+                    <TabsTrigger value="corretoras" className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Corretoras
+                    </TabsTrigger>
+                    <TabsTrigger value="lotes" className="flex items-center gap-2">
+                      <Package className="w-4 h-4" />
+                      Distribuir Lotes
+                    </TabsTrigger>
+                  </>
+                )}
               </TabsList>
             </div>
 
@@ -216,10 +266,22 @@ export default function CRM() {
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Todos vendedores</option>
-                  {vendedores.map(v => (
+                  {vendedores.filter(v => v.tipo === 'vendedor').map(v => (
                     <option key={v.id} value={v.nome}>{v.nome}</option>
                   ))}
                 </select>
+                {isAdmin && (
+                  <select
+                    value={filtroCorretora}
+                    onChange={(e) => setFiltroCorretora(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Todas corretoras</option>
+                    {corretoras.map(c => (
+                      <option key={c.id} value={c.id}>{c.nome}</option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               <LeadsTable 
@@ -248,6 +310,18 @@ export default function CRM() {
             <TabsContent value="chatbot" className="p-6">
               <ChatbotVendedor />
             </TabsContent>
+
+            {(isAdmin || isSupervisor) && (
+              <>
+                <TabsContent value="corretoras" className="p-6">
+                  <GestaoCorretoras />
+                </TabsContent>
+
+                <TabsContent value="lotes" className="p-6">
+                  <DistribuicaoLotes usuarioEmail={usuarioAtual?.email} />
+                </TabsContent>
+              </>
+            )}
           </Tabs>
         </div>
       </div>
