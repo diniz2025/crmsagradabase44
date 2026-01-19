@@ -15,7 +15,8 @@ import {
   Trash2,
   MessageCircle,
   Building2,
-  Package
+  Package,
+  BookOpen
 } from "lucide-react";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
@@ -28,6 +29,7 @@ import LeadScoringEngine from "../components/crm/LeadScoringEngine";
 import ChatbotVendedor from "../components/crm/ChatbotVendedor";
 import GestaoCorretoras from "../components/crm/GestaoCorretoras";
 import DistribuicaoLotes from "../components/crm/DistribuicaoLotes";
+import ManualVendedor from "../components/crm/ManualVendedor";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("tabela");
@@ -225,6 +227,10 @@ export default function CRM() {
                   <MessageCircle className="w-4 h-4" />
                   Assistente IA
                 </TabsTrigger>
+                <TabsTrigger value="manual" className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Manual
+                </TabsTrigger>
                 {(isAdmin || isSupervisor) && (
                   <>
                     <TabsTrigger value="corretoras" className="flex items-center gap-2">
@@ -309,6 +315,10 @@ export default function CRM() {
 
             <TabsContent value="chatbot" className="p-6">
               <ChatbotVendedor />
+            </TabsContent>
+
+            <TabsContent value="manual" className="p-6">
+              <ManualVendedor />
             </TabsContent>
 
             {(isAdmin || isSupervisor) && (
