@@ -1,0 +1,115 @@
+import React from "react";
+import { base44 } from "@/api/base44Client";
+import { useMutation } from "@tanstack/react-query";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Mail } from "lucide-react";
+
+const stages = ['Lead', 'Qualificado', 'Proposta', 'Fechado', 'Descartado'];
+const stageColors = {
+  Lead: 'bg-blue-500',
+  Qualificado: 'bg-yellow-500',
+  Proposta: 'bg-purple-500',
+  Fechado: 'bg-green-500',
+  Descartado: 'bg-gray-500'
+};
+
+export default function PipelineKanban({ leads, onRefetch, onEdit }) {
+  const [draggedId, setDraggedId] = React.useState(null);
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, status }) => base44.entities.Lead.update(id, { status }),
+    onSuccess: () => {
+      onRefetch();
+    },
+  });
+
+  const handleDragStart = (e, leadId) => {
+    setDraggedId(leadId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, newStatus) => {
+    e.preventDefault();
+    if (draggedId) {
+      updateMutation.mutate({ id: draggedId, status: newStatus });
+      setDraggedId(null);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {stages.map(stage => {
+        const stageLeads = leads.filter(l => l.status === stage);
+        return (
+          <div key={stage} className="flex flex-col">
+            <div className={`${stageColors[stage]} text-white px-4 py-3 rounded-t-lg font-semibold flex justify-between items-center`}>
+              <span>{stage}</span>
+              <Badge variant="secondary" className="bg-white/20 text-white">
+                {stageLeads.length}
+              </Badge>
+            </div>
+            
+            <div
+              className="bg-gray-100 min-h-[500px] p-3 rounded-b-lg space-y-3"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, stage)}
+            >
+              {stageLeads.map(lead => (
+                <Card
+                  key={lead.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, lead.id)}
+                  className="cursor-move hover:shadow-lg transition-shadow bg-white"
+                  onClick={() => onEdit(lead)}
+                >
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {lead.nome_completo}
+                    </h3>
+                    
+                    {lead.vendedor && (
+                      <p className="text-xs text-gray-500 mb-2">
+                        👤 {lead.vendedor}
+                      </p>
+                    )}
+                    
+                    {lead.cidade && (
+                      <p className="text-xs text-gray-500 mb-2">
+                        📍 {lead.cidade}
+                      </p>
+                    )}
+                    
+                    <div className="flex gap-2 mt-3">
+                      {lead.telefone && (
+                        <div className="flex-1 text-center">
+                          <Phone className="w-3 h-3 mx-auto text-green-600" />
+                        </div>
+                      )}
+                      {lead.email && (
+                        <div className="flex-1 text-center">
+                          <Mail className="w-3 h-3 mx-auto text-blue-600" />
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {stageLeads.length === 0 && (
+                <div className="text-center text-gray-400 text-sm py-8">
+                  Arraste leads aqui
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
