@@ -131,30 +131,75 @@ export default function CRM() {
     
     try {
       const text = await file.text();
-      const lines = text.split(/\r?\n/).filter(Boolean);
-      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      const lines = text.split(/\r?\n/).filter(line => line.trim());
+      
+      if (lines.length < 2) {
+        alert('Arquivo CSV vazio ou inválido');
+        e.target.value = '';
+        return;
+      }
+
+      // Parse CSV considerando aspas
+      const parseCSVLine = (line) => {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        result.push(current.trim());
+        return result;
+      };
+
+      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/["\s]/g, '_'));
       
       const newLeads = [];
       for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+        const values = parseCSVLine(lines[i]);
         const lead = {
-          nome_completo: values[headers.indexOf('nome_completo')] || values[0] || '',
+          nome_completo: values[headers.indexOf('nome_completo')] || values[headers.indexOf('nome')] || values[0] || '',
           cnpj: values[headers.indexOf('cnpj')] || '',
           cidade: values[headers.indexOf('cidade')] || '',
-          telefone: values[headers.indexOf('telefone')] || values[headers.indexOf('fone')] || '',
+          telefone: values[headers.indexOf('telefone')] || values[headers.indexOf('fone')] || values[headers.indexOf('telefone')] || '',
           email: values[headers.indexOf('email')] || '',
           contato: values[headers.indexOf('contato')] || '',
           status: 'Lead',
-          vendedor: vendedores[0]?.nome || ''
+          vendedor: vendedores[0]?.nome || '',
+          corretora_id: minhaCorretoraId || corretoras[0]?.id || ''
         };
-        newLeads.push(lead);
+        
+        if (lead.nome_completo) {
+          newLeads.push(lead);
+        }
       }
       
-      await base44.entities.Lead.bulkCreate(newLeads);
+      if (newLeads.length === 0) {
+        alert('Nenhum lead válido encontrado no CSV');
+        e.target.value = '';
+        return;
+      }
+
+      // Importa em lotes de 100
+      const BATCH_SIZE = 100;
+      for (let i = 0; i < newLeads.length; i += BATCH_SIZE) {
+        const batch = newLeads.slice(i, i + BATCH_SIZE);
+        await base44.entities.Lead.bulkCreate(batch);
+      }
+      
       refetch();
-      alert(`${newLeads.length} leads importados com sucesso!`);
+      alert(`✅ ${newLeads.length} leads importados com sucesso!`);
     } catch (error) {
-      alert('Erro ao importar CSV. Verifique o formato do arquivo.');
+      console.error('Erro ao importar:', error);
+      alert('❌ Erro ao importar CSV: ' + error.message);
     }
     
     e.target.value = '';
