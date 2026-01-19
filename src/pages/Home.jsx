@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import FormularioContato from "../components/FormularioContato";
 import BeneficiosSection from "../components/BeneficiosSection";
 import ComoFunciona from "../components/ComoFunciona";
+import RedeCredenciada from "../components/RedeCredenciada";
 
 export default function Home() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -173,6 +174,8 @@ export default function Home() {
       </section>
 
       <BeneficiosSection />
+      
+      <RedeCredenciada />
       
       <ComoFunciona />
 

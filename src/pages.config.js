@@ -1,11 +1,11 @@
-import Home from './pages/Home';
 import CRM from './pages/CRM';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
     "CRM": CRM,
+    "Home": Home,
 }
 
 export const pagesConfig = {
