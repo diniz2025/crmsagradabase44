@@ -35,6 +35,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <meta charSet="UTF-8" />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#4DBABC] via-[#5AC0C2] to-[#45B1B3] text-white">
         <div className="absolute inset-0 opacity-10">
