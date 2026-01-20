@@ -204,15 +204,29 @@ export default function CRM() {
 
       alert(`Processando ${newLeads.length} leads...`);
 
-      // Importa em lotes de 100
-      const BATCH_SIZE = 100;
+      // Importa em lotes pequenos com delay para evitar rate limit
+      const BATCH_SIZE = 20;
       let importados = 0;
       
       for (let i = 0; i < newLeads.length; i += BATCH_SIZE) {
         const batch = newLeads.slice(i, i + BATCH_SIZE);
-        await base44.entities.Lead.bulkCreate(batch);
-        importados += batch.length;
-        console.log(`Importados ${importados}/${newLeads.length} leads`);
+        
+        try {
+          await base44.entities.Lead.bulkCreate(batch);
+          importados += batch.length;
+          console.log(`Importados ${importados}/${newLeads.length} leads`);
+          
+          // Delay de 500ms entre lotes para evitar rate limit
+          if (i + BATCH_SIZE < newLeads.length) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        } catch (batchError) {
+          console.error('Erro no lote:', batchError);
+          alert(`⚠️ Erro parcial: ${importados} leads importados antes do erro. Tente novamente com menos leads.`);
+          e.target.value = '';
+          await refetch();
+          return;
+        }
       }
       
       await refetch();
