@@ -53,9 +53,13 @@ export default function RedeCredenciada() {
   const [busca, setBusca] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [cidadeFiltro, setCidadeFiltro] = useState("");
+  const [bairroFiltro, setBairroFiltro] = useState("");
+  const [especialidadeFiltro, setEspecialidadeFiltro] = useState("");
+  const [atendimento24hFiltro, setAtendimento24hFiltro] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingEstabelecimento, setEditingEstabelecimento] = useState(null);
   const [usuarioAtual, setUsuarioAtual] = useState(null);
+  const [expandedCard, setExpandedCard] = useState(null);
 
   React.useEffect(() => {
     base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
@@ -70,14 +74,26 @@ export default function RedeCredenciada() {
   const isAdmin = usuarioAtual?.role === 'admin';
 
   const cidades = [...new Set(estabelecimentos.map(e => e.cidade))].sort();
+  const bairros = [...new Set(estabelecimentos.map(e => e.bairro).filter(Boolean))].sort();
+  
+  const todasEspecialidades = [...new Set(
+    estabelecimentos
+      .map(e => e.especialidades || '')
+      .flatMap(esp => esp.split(',').map(s => s.trim()))
+      .filter(Boolean)
+  )].sort();
 
   const estabelecimentosFiltrados = estabelecimentos
     .filter(e => !tipoFiltro || e.tipo === tipoFiltro)
     .filter(e => !cidadeFiltro || e.cidade === cidadeFiltro)
+    .filter(e => !bairroFiltro || e.bairro === bairroFiltro)
+    .filter(e => !especialidadeFiltro || (e.especialidades || '').toLowerCase().includes(especialidadeFiltro.toLowerCase()))
+    .filter(e => !atendimento24hFiltro || (atendimento24hFiltro === 'sim' ? e.atendimento_24h : !e.atendimento_24h))
     .filter(e => !busca || 
       e.nome.toLowerCase().includes(busca.toLowerCase()) ||
       (e.especialidades || '').toLowerCase().includes(busca.toLowerCase()) ||
-      (e.bairro || '').toLowerCase().includes(busca.toLowerCase())
+      (e.bairro || '').toLowerCase().includes(busca.toLowerCase()) ||
+      (e.endereco || '').toLowerCase().includes(busca.toLowerCase())
     );
 
   const estabelecimentosPorTipo = {};
@@ -116,38 +132,99 @@ export default function RedeCredenciada() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="relative sm:col-span-2 lg:col-span-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        {/* Busca Principal */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
-              placeholder="Buscar..."
+              placeholder="Buscar por nome, especialidade, bairro ou endereço..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pl-10 h-12"
+              className="pl-12 h-14 text-lg border-2 border-[#4DBABC] focus:border-[#FF6B35]"
             />
           </div>
-          
-          <select
-            value={tipoFiltro}
-            onChange={(e) => setTipoFiltro(e.target.value)}
-            className="px-4 py-2 h-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
-          >
-            <option value="">Todos os tipos</option>
-            {Object.entries(tipoLabels).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
+        </div>
 
-          <select
-            value={cidadeFiltro}
-            onChange={(e) => setCidadeFiltro(e.target.value)}
-            className="px-4 py-2 h-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
-          >
-            <option value="">Todas as cidades</option>
-            {cidades.map(cidade => (
-              <option key={cidade} value={cidade}>{cidade}</option>
-            ))}
-          </select>
+        {/* Filtros Avançados */}
+        <div className="mb-8 bg-white rounded-xl p-6 shadow-md">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-[#4DBABC]" />
+            Filtros Avançados
+          </h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <select
+              value={tipoFiltro}
+              onChange={(e) => setTipoFiltro(e.target.value)}
+              className="px-4 py-2 h-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            >
+              <option value="">Todos os tipos</option>
+              {Object.entries(tipoLabels).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+
+            <select
+              value={cidadeFiltro}
+              onChange={(e) => setCidadeFiltro(e.target.value)}
+              className="px-4 py-2 h-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            >
+              <option value="">Todas as cidades</option>
+              {cidades.map(cidade => (
+                <option key={cidade} value={cidade}>{cidade}</option>
+              ))}
+            </select>
+
+            <select
+              value={bairroFiltro}
+              onChange={(e) => setBairroFiltro(e.target.value)}
+              className="px-4 py-2 h-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            >
+              <option value="">Todos os bairros</option>
+              {bairros.map(bairro => (
+                <option key={bairro} value={bairro}>{bairro}</option>
+              ))}
+            </select>
+
+            <select
+              value={especialidadeFiltro}
+              onChange={(e) => setEspecialidadeFiltro(e.target.value)}
+              className="px-4 py-2 h-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            >
+              <option value="">Todas especialidades</option>
+              {todasEspecialidades.map(esp => (
+                <option key={esp} value={esp}>{esp}</option>
+              ))}
+            </select>
+
+            <select
+              value={atendimento24hFiltro}
+              onChange={(e) => setAtendimento24hFiltro(e.target.value)}
+              className="px-4 py-2 h-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            >
+              <option value="">Atendimento (todos)</option>
+              <option value="sim">Apenas 24h</option>
+              <option value="nao">Horário comercial</option>
+            </select>
+          </div>
+          
+          {(busca || tipoFiltro || cidadeFiltro || bairroFiltro || especialidadeFiltro || atendimento24hFiltro) && (
+            <div className="mt-4 pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setBusca("");
+                  setTipoFiltro("");
+                  setCidadeFiltro("");
+                  setBairroFiltro("");
+                  setEspecialidadeFiltro("");
+                  setAtendimento24hFiltro("");
+                }}
+                className="text-sm"
+              >
+                Limpar Filtros
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="mb-6 flex gap-2 flex-wrap">
@@ -183,6 +260,8 @@ export default function RedeCredenciada() {
                         key={est.id}
                         estabelecimento={est}
                         isAdmin={isAdmin}
+                        isExpanded={expandedCard === est.id}
+                        onToggle={() => setExpandedCard(expandedCard === est.id ? null : est.id)}
                         onEdit={() => {
                           setEditingEstabelecimento(est);
                           setShowModal(true);
@@ -215,7 +294,7 @@ export default function RedeCredenciada() {
   );
 }
 
-function EstabelecimentoCard({ estabelecimento, isAdmin, onEdit }) {
+function EstabelecimentoCard({ estabelecimento, isAdmin, isExpanded, onToggle, onEdit }) {
   const Icon = tipoIcons[estabelecimento.tipo];
 
   return (
@@ -223,80 +302,163 @@ function EstabelecimentoCard({ estabelecimento, isAdmin, onEdit }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <Card className="h-full hover:shadow-xl transition-all duration-300">
-        <CardHeader>
-          <div className="flex items-start justify-between mb-2">
-            <Badge className={tipoColors[estabelecimento.tipo]}>
-              <Icon className="w-3 h-3 mr-1" />
-              {tipoLabels[estabelecimento.tipo]}
-            </Badge>
-            {estabelecimento.atendimento_24h && (
-              <Badge className="bg-green-500 text-white">24h</Badge>
-            )}
-          </div>
-          <CardTitle className="text-lg">{estabelecimento.nome}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {estabelecimento.especialidades && (
-            <div className="text-sm">
-              <span className="font-semibold text-gray-700">Especialidades:</span>
-              <p className="text-gray-600 mt-1">{estabelecimento.especialidades}</p>
-            </div>
-          )}
-
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 mt-0.5 text-[#4DBABC] flex-shrink-0" />
-              <div>
-                <p>{estabelecimento.endereco}</p>
-                <p>{estabelecimento.bairro && `${estabelecimento.bairro} - `}{estabelecimento.cidade}/{estabelecimento.estado}</p>
-                {estabelecimento.cep && <p>CEP: {estabelecimento.cep}</p>}
+      <Card className="h-full hover:shadow-xl transition-all duration-300 overflow-hidden">
+        {/* Snippet - Informações Principais */}
+        <div 
+          className="cursor-pointer"
+          onClick={onToggle}
+        >
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between mb-2">
+              <Badge className={tipoColors[estabelecimento.tipo]}>
+                <Icon className="w-3 h-3 mr-1" />
+                {tipoLabels[estabelecimento.tipo]}
+              </Badge>
+              <div className="flex gap-1">
+                {estabelecimento.atendimento_24h && (
+                  <Badge className="bg-green-500 text-white">24h</Badge>
+                )}
               </div>
             </div>
-
-            {estabelecimento.telefone && (
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#4DBABC]" />
-                <a href={`tel:${estabelecimento.telefone}`} className="hover:text-[#4DBABC]">
-                  {estabelecimento.telefone}
-                </a>
+            <CardTitle className="text-lg leading-tight">{estabelecimento.nome}</CardTitle>
+          </CardHeader>
+          
+          <CardContent className="pt-0">
+            {/* Snippet Info */}
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2 text-gray-600">
+                <MapPin className="w-4 h-4 mt-0.5 text-[#4DBABC] flex-shrink-0" />
+                <p className="line-clamp-1">
+                  {estabelecimento.bairro && `${estabelecimento.bairro} - `}{estabelecimento.cidade}/{estabelecimento.estado}
+                </p>
               </div>
-            )}
-
-            {estabelecimento.whatsapp && (
-              <div className="flex items-center gap-2">
-                <MessageCircle className="w-4 h-4 text-green-600" />
-                <a
-                  href={`https://wa.me/55${estabelecimento.whatsapp.replace(/\D/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-green-600"
-                >
-                  WhatsApp: {estabelecimento.whatsapp}
-                </a>
-              </div>
-            )}
-
-            {estabelecimento.horario_funcionamento && (
-              <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 mt-0.5 text-[#4DBABC]" />
-                <p>{estabelecimento.horario_funcionamento}</p>
-              </div>
-            )}
-          </div>
-
-          {estabelecimento.observacoes && (
-            <div className="text-sm bg-blue-50 p-3 rounded-lg">
-              <p className="text-gray-700">{estabelecimento.observacoes}</p>
+              
+              {estabelecimento.especialidades && (
+                <div className="flex items-start gap-2 text-gray-600">
+                  <Stethoscope className="w-4 h-4 mt-0.5 text-[#4DBABC] flex-shrink-0" />
+                  <p className="line-clamp-2">{estabelecimento.especialidades}</p>
+                </div>
+              )}
+              
+              {estabelecimento.telefone && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Phone className="w-4 h-4 text-[#4DBABC] flex-shrink-0" />
+                  <p>{estabelecimento.telefone}</p>
+                </div>
+              )}
             </div>
-          )}
 
-          {isAdmin && (
-            <Button variant="outline" onClick={onEdit} className="w-full mt-4">
-              Editar
-            </Button>
-          )}
-        </CardContent>
+            <div className="mt-4 pt-3 border-t">
+              <p className="text-xs text-[#4DBABC] font-semibold flex items-center gap-1">
+                {isExpanded ? '▼ Clique para ocultar detalhes' : '▶ Clique para ver detalhes completos'}
+              </p>
+            </div>
+          </CardContent>
+        </div>
+
+        {/* Detalhes Completos - Expansível */}
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <CardContent className="pt-0 border-t bg-gray-50">
+              <div className="space-y-3 pt-4">
+                <div className="text-sm">
+                  <span className="font-semibold text-gray-700">Endereço Completo:</span>
+                  <div className="flex items-start gap-2 mt-2 text-gray-600">
+                    <MapPin className="w-4 h-4 mt-0.5 text-[#4DBABC] flex-shrink-0" />
+                    <div>
+                      <p>{estabelecimento.endereco}</p>
+                      <p>{estabelecimento.bairro && `${estabelecimento.bairro} - `}{estabelecimento.cidade}/{estabelecimento.estado}</p>
+                      {estabelecimento.cep && <p>CEP: {estabelecimento.cep}</p>}
+                    </div>
+                  </div>
+                </div>
+
+                {estabelecimento.whatsapp && (
+                  <div className="text-sm">
+                    <span className="font-semibold text-gray-700">Contato WhatsApp:</span>
+                    <div className="flex items-center gap-2 mt-2">
+                      <MessageCircle className="w-4 h-4 text-green-600" />
+                      <a
+                        href={`https://wa.me/55${estabelecimento.whatsapp.replace(/\D/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {estabelecimento.whatsapp}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {estabelecimento.horario_funcionamento && (
+                  <div className="text-sm">
+                    <span className="font-semibold text-gray-700">Horário:</span>
+                    <div className="flex items-start gap-2 mt-2 text-gray-600">
+                      <Clock className="w-4 h-4 mt-0.5 text-[#4DBABC]" />
+                      <p>{estabelecimento.horario_funcionamento}</p>
+                    </div>
+                  </div>
+                )}
+
+                {estabelecimento.observacoes && (
+                  <div className="text-sm bg-blue-100 p-3 rounded-lg">
+                    <span className="font-semibold text-gray-700">Informações Adicionais:</span>
+                    <p className="text-gray-700 mt-1">{estabelecimento.observacoes}</p>
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-2">
+                  {estabelecimento.telefone && (
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = `tel:${estabelecimento.telefone}`;
+                      }}
+                      className="bg-[#4DBABC] hover:bg-[#45B1B3] text-white flex-1"
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      Ligar
+                    </Button>
+                  )}
+                  
+                  {estabelecimento.whatsapp && (
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`https://wa.me/55${estabelecimento.whatsapp.replace(/\D/g, '')}`, '_blank');
+                      }}
+                      className="bg-green-600 hover:bg-green-700 text-white flex-1"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
+                  )}
+                </div>
+
+                {isAdmin && (
+                  <Button 
+                    variant="outline" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }} 
+                    className="w-full mt-2"
+                  >
+                    Editar Estabelecimento
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </motion.div>
+        )}
       </Card>
     </motion.div>
   );
