@@ -33,6 +33,7 @@ import GestaoCorretoras from "../components/crm/GestaoCorretoras";
 import DistribuicaoLotes from "../components/crm/DistribuicaoLotes";
 import ManualVendedor from "../components/crm/ManualVendedor";
 import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
+import ImportacaoMassa from "../components/crm/ImportacaoMassa";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -299,18 +300,11 @@ export default function CRM() {
               <Button 
                 variant="outline" 
                 className="bg-white/10 hover:bg-white/20 border-white/30 text-white cursor-pointer"
-                onClick={() => document.getElementById('csv-upload').click()}
+                onClick={() => setActiveTab("config")}
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Importar CSV
+                Importar em Massa
               </Button>
-              <input 
-                id="csv-upload"
-                type="file" 
-                accept=".csv" 
-                onChange={handleImport} 
-                className="hidden" 
-              />
               {isAdmin && leads.length > 0 && (
                 <Button onClick={handleClearAll} variant="outline" className="bg-red-500/20 hover:bg-red-500/30 border-red-300 text-white">
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -444,6 +438,12 @@ export default function CRM() {
 
             <TabsContent value="config" className="p-6 space-y-6">
               {isAdmin && <GuiaEscalabilidade />}
+              <ImportacaoMassa 
+                onComplete={refetch}
+                vendedores={vendedores}
+                corretoras={corretoras}
+                minhaCorretoraId={minhaCorretoraId}
+              />
               <LeadScoringEngine />
               <ConfigCRM vendedores={vendedores} />
               <AutomacoesConfig />
