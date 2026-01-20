@@ -58,16 +58,16 @@ export default function Home() {
             <div className="lg:w-1/2 mb-12 lg:mb-0">
               <Badge className="mb-6 bg-[#FF6B35] hover:bg-[#E85A28] text-white border-none text-sm px-4 py-2">
                 <MapPin className="w-4 h-4 mr-2" />
-                Osasco e Região
+                Osasco e Regi&atilde;o
               </Badge>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Plano de Saúde para seu
-                <span className="block text-[#FF6B35]">Negócio de Alimentação</span>
+                Plano de Sa&uacute;de para seu
+                <span className="block text-[#FF6B35]">Neg&oacute;cio de Alimenta&ccedil;&atilde;o</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Proteja você e sua equipe com o Plano Sagrada Família
+                Proteja voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
               </p>
 
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-8 border border-white/20 inline-block w-full max-w-sm">
@@ -75,7 +75,7 @@ export default function Home() {
                 <div className="flex items-baseline justify-center">
                   <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#FF6B35]">R$ 235</span>
                   <span className="text-2xl md:text-3xl text-[#FF6B35]">,09</span>
-                  <span className="text-lg md:text-xl text-white/90 ml-2">/mês</span>
+                  <span className="text-lg md:text-xl text-white/90 ml-2">/m&ecirc;s</span>
                 </div>
               </div>
 
@@ -115,15 +115,15 @@ export default function Home() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold">Especializado em</h3>
-                      <p className="text-white/80">Bares & Restaurantes</p>
+                      <p className="text-white/80">Bares &amp; Restaurantes</p>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
                     {[
-                      "Atendimento 24h de emergência",
+                      "Atendimento 24h de emerg&ecirc;ncia",
                       "Rede credenciada em Osasco",
-                      "Sem carência para urgências",
+                      "Sem car&ecirc;ncia para urg&ecirc;ncias",
                       "Cobertura completa"
                     ].map((item, index) => (
                       <div key={index} className="flex items-center gap-3">
@@ -139,7 +139,7 @@ export default function Home() {
                     <Star className="w-5 h-5 text-white fill-white" />
                     <div>
                       <div className="text-2xl font-bold text-white">4.9</div>
-                      <div className="text-xs text-white/80">Avaliação</div>
+                      <div className="text-xs text-white/80">Avalia&ccedil;&atilde;o</div>
                     </div>
                   </div>
                 </div>
@@ -157,7 +157,7 @@ export default function Home() {
               { icon: Users, value: "500+", label: "Estabelecimentos" },
               { icon: Heart, value: "24/7", label: "Atendimento" },
               { icon: Shield, value: "100%", label: "Cobertura" },
-              { icon: Clock, value: "0", label: "Carência" }
+              { icon: Clock, value: "0", label: "Car&ecirc;ncia" }
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -185,10 +185,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Nossos Produtos e Serviços
+              Nossos Produtos e Servi&ccedil;os
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Soluções completas de seguros para o setor de alimentação
+              Solu&ccedil;&otilde;es completas de seguros para o setor de alimenta&ccedil;&atilde;o
             </p>
           </div>
 
@@ -202,9 +202,9 @@ export default function Home() {
               <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
                 <Heart className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-4">Plano de Saúde</h3>
+              <h3 className="text-2xl font-bold mb-4">Plano de Sa&uacute;de</h3>
               <p className="text-white/90 mb-6">
-                Cobertura completa para você e sua equipe com o Plano Sagrada Família
+                Cobertura completa para voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
               </p>
               <Button 
                 onClick={scrollToForm}
@@ -224,9 +224,9 @@ export default function Home() {
               <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
                 <Flame className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-4">Seguro de Incêndio</h3>
+              <h3 className="text-2xl font-bold mb-4">Seguro de Inc&ecirc;ndio</h3>
               <p className="text-white/90 mb-6">
-                Proteja seu estabelecimento contra incêndios e sinistros
+                Proteja seu estabelecimento contra inc&ecirc;ndios e sinistros
               </p>
               <a
                 href="https://lovable.dev/projects/2b9e6462-0132-4029-a2c6-c5ceaa17f4ab"
@@ -251,7 +251,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold mb-4">DCG RH Sem Risco</h3>
               <p className="text-white/90 mb-6">
-                Gestão completa de recursos humanos sem riscos trabalhistas
+                Gest&atilde;o completa de recursos humanos sem riscos trabalhistas
               </p>
               <a
                 href="https://www.dcgrhsemriscos.business/"
@@ -274,10 +274,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Stethoscope className="w-16 h-16 mx-auto mb-6 text-[#FF6B35]" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Pronto para Proteger seu Negócio?
+            Pronto para Proteger seu Neg&oacute;cio?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Junte-se a centenas de estabelecimentos em Osasco que já confiam no Sagrada Família
+            Junte-se a centenas de estabelecimentos em Osasco que j&aacute; confiam no Sagrada Fam&iacute;lia
           </p>
           <Button 
             size="lg"
@@ -310,7 +310,7 @@ export default function Home() {
                 />
               </div>
               <p className="text-sm">
-                Plano de saúde especialmente desenvolvido para o setor de bares e restaurantes de Osasco e região.
+                Plano de sa&uacute;de especialmente desenvolvido para o setor de bares e restaurantes de Osasco e regi&atilde;o.
               </p>
             </div>
             <div>
@@ -318,25 +318,25 @@ export default function Home() {
               <div className="space-y-2 text-sm">
                 <p className="font-semibold text-white">Nadjair Diniz Barbosa</p>
                 <p className="text-gray-400 text-xs">Coordenador do Setor de Seguros</p>
-                <p className="text-gray-400 text-xs">SinHoRes Osasco, Alphaville e Região</p>
+                <p className="text-gray-400 text-xs">SinHoRes Osasco, Alphaville e Regi&atilde;o</p>
                 <p className="flex items-center gap-2 mt-3">
                   <Phone className="w-4 h-4" />
                   Entre em contato através do formulário
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  Osasco, Alphaville e Região
+                  Osasco, Alphaville e Regi&atilde;o
                 </p>
               </div>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Horário de Atendimento</h4>
-              <p className="text-sm">Segunda a Sexta: 8h às 18h</p>
-              <p className="text-sm">Sábado: 8h às 12h</p>
+              <h4 className="text-white font-semibold mb-4">Hor&aacute;rio de Atendimento</h4>
+              <p className="text-sm">Segunda a Sexta: 8h &agrave;s 18h</p>
+              <p className="text-sm">S&aacute;bado: 8h &agrave;s 12h</p>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; 2025 Plano de Saúde Sagrada Família. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Plano de Sa&uacute;de Sagrada Fam&iacute;lia. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
