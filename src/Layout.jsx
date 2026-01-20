@@ -17,9 +17,12 @@ export default function Layout({ children, currentPageName }) {
       <nav className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to={createPageUrl("Home")} className="flex items-center gap-2 font-bold text-xl hover:text-[#FF6B35] transition-colors">
-              <Heart className="w-6 h-6 text-[#FF6B35]" />
-              Sagrada Família
+            <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691644e4652cae53371d6050/624688f81_LogoSinHoRes_2021_horizontal1.png" 
+                alt="SinHoRes Osasco" 
+                className="h-12"
+              />
             </Link>
 
             <div className="flex gap-1">

@@ -212,10 +212,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                <Heart className="w-5 h-5 text-[#FF6B35]" />
-                Sagrada Família
-              </h3>
+              <div className="mb-4">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691644e4652cae53371d6050/5767f8bd5_LogoSinHoRes_2021_vertical1.png" 
+                  alt="SinHoRes Osasco" 
+                  className="h-32 mb-4"
+                />
+              </div>
               <p className="text-sm">
                 Plano de saúde especialmente desenvolvido para o setor de bares e restaurantes de Osasco e região.
               </p>
