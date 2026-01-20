@@ -70,12 +70,12 @@ export default function Home() {
                 Proteja você e sua equipe com o Plano Sagrada Família
               </p>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20 inline-block">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-8 border border-white/20 inline-block w-full max-w-sm">
                 <p className="text-sm text-white/80 mb-2">A partir de apenas</p>
-                <div className="flex items-baseline">
-                  <span className="text-5xl md:text-6xl font-bold text-[#FF6B35]">R$ 235</span>
-                  <span className="text-3xl text-[#FF6B35]">,09</span>
-                  <span className="text-xl text-white/90 ml-2">/mês</span>
+                <div className="flex items-baseline justify-center">
+                  <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#FF6B35]">R$ 235</span>
+                  <span className="text-2xl md:text-3xl text-[#FF6B35]">,09</span>
+                  <span className="text-lg md:text-xl text-white/90 ml-2">/mês</span>
                 </div>
               </div>
 
@@ -152,12 +152,12 @@ export default function Home() {
       {/* Stats Section */}
       <section className="py-16 bg-gray-50 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              { icon: Users, value: "500+", label: "Estabelecimentos Atendidos" },
+              { icon: Users, value: "500+", label: "Estabelecimentos" },
               { icon: Heart, value: "24/7", label: "Atendimento" },
               { icon: Shield, value: "100%", label: "Cobertura" },
-              { icon: Clock, value: "0", label: "Carência Emergência" }
+              { icon: Clock, value: "0", label: "Carência" }
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -165,11 +165,11 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center"
+                className="text-center p-4"
               >
-                <stat.icon className="w-10 h-10 mx-auto mb-3 text-[#4DBABC]" />
-                <div className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
+                <stat.icon className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-2 md:mb-3 text-[#4DBABC]" />
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                <div className="text-xs md:text-sm text-gray-600">{stat.label}</div>
               </motion.div>
             ))}
           </div>

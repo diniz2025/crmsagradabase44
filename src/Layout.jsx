@@ -27,21 +27,36 @@ export default function Layout({ children, currentPageName }) {
               />
             </Link>
 
-            <div className="flex gap-1">
+            <div className="hidden md:flex gap-1">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={createPageUrl(item.path)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all text-sm ${
                     currentPageName === item.path
                       ? "bg-[#FF6B35] text-white font-semibold"
                       : "text-white hover:bg-white/10"
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
-                  {item.name}
+                  <span className="hidden lg:inline">{item.name}</span>
                 </Link>
               ))}
+            </div>
+
+            {/* Menu Mobile */}
+            <div className="md:hidden">
+              <select
+                value={currentPageName}
+                onChange={(e) => window.location.href = createPageUrl(e.target.value)}
+                className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 text-sm"
+              >
+                {navItems.map((item) => (
+                  <option key={item.path} value={item.path} className="text-gray-900">
+                    {item.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -53,16 +68,13 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-sm space-y-4">
             <p className="text-xs leading-relaxed max-w-4xl mx-auto">
-              A DCG Corretora de Seguros LTDA (CNPJ 16.383.565/0001-35) trata dados pessoais conforme a LGPD (Lei 13.709/2018), com foco em finalidade, necessidade, transparência e segurança. Este CRM adota controles como autenticação forte (recomendado MFA), perfis de acesso (RBAC), trilhas de auditoria, criptografia em trânsito (TLS/HTTPS), backups e monitoramento. Dados sensíveis de saúde são tratados apenas quando indispensáveis e com base legal aplicável.
+              A DCG Corretora de Seguros LTDA (CNPJ 16.383.565/0001-35) trata dados pessoais conforme a LGPD (Lei 13.709/2018). Este sistema adota controles de segurança e proteção de dados.
             </p>
             <p className="text-xs">
-              <strong>Direitos do titular:</strong> diniz@dcgseguros.com.br | 
+              <strong>Contato:</strong> diniz@dcgseguros.com.br | 
               <Link to={createPageUrl("Politica")} className="text-blue-400 hover:text-blue-300 ml-2">
-                Política Completa
+                Política de Privacidade
               </Link>
-            </p>
-            <p className="text-xs text-gray-500">
-              Este sistema pode usar IA como apoio à decisão e não substitui validação por profissional habilitado. Conteúdo e sistema protegidos por direitos autorais; proibidos scraping, cópia e engenharia reversa.
             </p>
             <div className="border-t border-gray-800 pt-4 mt-4">
               <p className="text-xs">&copy; 2026 DCG Corretora de Seguros LTDA. Todos os direitos reservados.</p>

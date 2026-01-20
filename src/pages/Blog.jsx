@@ -110,20 +110,20 @@ export default function Blog() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
+        <div className="mb-8 flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               placeholder="Buscar artigos..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-12"
             />
           </div>
           <select
             value={categoriaFiltro}
             onChange={(e) => setCategoriaFiltro(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent"
+            className="px-4 py-2 h-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4DBABC] focus:border-transparent min-w-[200px]"
           >
             <option value="">Todas as categorias</option>
             {Object.entries(categoriaLabels).map(([key, label]) => (
