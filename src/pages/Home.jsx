@@ -59,12 +59,12 @@ export default function Home() {
               </Badge>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Plano de Saúde para seu
-                <span className="block text-[#FF6B35]">Negócio de Alimentação</span>
+                Plano de Sa&uacute;de para seu
+                <span className="block text-[#FF6B35]">Neg&oacute;cio de Alimenta&ccedil;&atilde;o</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Proteja você e sua equipe com o Plano Sagrada Família
+                Proteja voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
               </p>
 
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20 inline-block">
