@@ -14,7 +14,10 @@ import {
   Star,
   Stethoscope,
   MapPin,
-  ChefHat
+  ChefHat,
+  Flame,
+  Briefcase,
+  ExternalLink
 } from "lucide-react";
 import { motion } from "framer-motion";
 import FormularioContato from "../components/FormularioContato";
@@ -177,6 +180,93 @@ export default function Home() {
       
       <RedeCredenciada />
       
+      {/* Seção de Produtos/Seguros */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Nossos Produtos e Serviços
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Soluções completas de seguros para o setor de alimentação
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-[#4DBABC] to-[#45B1B3] rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <Heart className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Plano de Saúde</h3>
+              <p className="text-white/90 mb-6">
+                Cobertura completa para você e sua equipe com o Plano Sagrada Família
+              </p>
+              <Button 
+                onClick={scrollToForm}
+                className="w-full bg-[#FF6B35] hover:bg-[#E85A28] text-white"
+              >
+                Contratar Agora
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <Flame className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Seguro de Incêndio</h3>
+              <p className="text-white/90 mb-6">
+                Proteja seu estabelecimento contra incêndios e sinistros
+              </p>
+              <a
+                href="https://lovable.dev/projects/2b9e6462-0132-4029-a2c6-c5ceaa17f4ab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-white text-orange-600 hover:bg-gray-100 px-4 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Saiba Mais
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <Briefcase className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">DCG RH Sem Risco</h3>
+              <p className="text-white/90 mb-6">
+                Gestão completa de recursos humanos sem riscos trabalhistas
+              </p>
+              <a
+                href="https://www.dcgrhsemriscos.business/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-white text-blue-600 hover:bg-gray-100 px-4 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Acessar Site
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
       <ComoFunciona />
 
       {/* CTA Section */}
@@ -226,13 +316,16 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Contato</h4>
               <div className="space-y-2 text-sm">
-                <p className="flex items-center gap-2">
+                <p className="font-semibold text-white">Nadjair Diniz Barbosa</p>
+                <p className="text-gray-400 text-xs">Coordenador do Setor de Seguros</p>
+                <p className="text-gray-400 text-xs">SinHoRes Osasco, Alphaville e Região</p>
+                <p className="flex items-center gap-2 mt-3">
                   <Phone className="w-4 h-4" />
                   Entre em contato através do formulário
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  Osasco e Região
+                  Osasco, Alphaville e Região
                 </p>
               </div>
             </div>
