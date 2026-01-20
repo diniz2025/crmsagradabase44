@@ -1,0 +1,228 @@
+import React from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
+import { 
+  Calendar, 
+  User, 
+  Tag,
+  ArrowLeft,
+  Heart,
+  Flame,
+  Shield,
+  Briefcase,
+  Newspaper,
+  TrendingUp
+} from "lucide-react";
+import ReactMarkdown from "react-markdown";
+
+const categoriaLabels = {
+  plano_saude: "Plano de Saúde",
+  seguro_incendio: "Seguro de Incêndio",
+  dicas_seguranca: "Dicas de Segurança",
+  noticias: "Notícias",
+  rh_trabalhista: "RH & Trabalhista",
+  gestao: "Gestão"
+};
+
+const categoriaIcons = {
+  plano_saude: Heart,
+  seguro_incendio: Flame,
+  dicas_seguranca: Shield,
+  noticias: Newspaper,
+  rh_trabalhista: Briefcase,
+  gestao: TrendingUp
+};
+
+const categoriaColors = {
+  plano_saude: "bg-blue-100 text-blue-800",
+  seguro_incendio: "bg-red-100 text-red-800",
+  dicas_seguranca: "bg-green-100 text-green-800",
+  noticias: "bg-purple-100 text-purple-800",
+  rh_trabalhista: "bg-orange-100 text-orange-800",
+  gestao: "bg-teal-100 text-teal-800"
+};
+
+export default function ArtigoBlog() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const artigoId = urlParams.get('id');
+
+  const { data: artigo, isLoading } = useQuery({
+    queryKey: ['artigo', artigoId],
+    queryFn: async () => {
+      const artigos = await base44.entities.ArtigoBlog.filter({ id: artigoId });
+      return artigos[0];
+    },
+    enabled: !!artigoId,
+  });
+
+  const { data: artigosRelacionados = [] } = useQuery({
+    queryKey: ['artigos-relacionados', artigo?.categoria],
+    queryFn: async () => {
+      if (!artigo) return [];
+      const artigos = await base44.entities.ArtigoBlog.filter(
+        { categoria: artigo.categoria, publicado: true },
+        '-created_date',
+        4
+      );
+      return artigos.filter(a => a.id !== artigoId).slice(0, 3);
+    },
+    enabled: !!artigo,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4DBABC] mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando artigo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!artigo) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Newspaper className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Artigo não encontrado</h2>
+          <Link to={createPageUrl('Blog')}>
+            <Button className="mt-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar ao Blog
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const Icon = categoriaIcons[artigo.categoria] || Newspaper;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link to={createPageUrl('Blog')}>
+            <Button variant="outline" className="mb-4 bg-white/10 border-white/30 text-white hover:bg-white/20">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar ao Blog
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          {artigo.imagem_destaque && (
+            <img
+              src={artigo.imagem_destaque}
+              alt={artigo.titulo}
+              className="w-full h-96 object-cover"
+            />
+          )}
+
+          <div className="p-8 md:p-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Badge className={categoriaColors[artigo.categoria]}>
+                <Icon className="w-3 h-3 mr-1" />
+                {categoriaLabels[artigo.categoria]}
+              </Badge>
+              {!artigo.publicado && (
+                <Badge className="bg-yellow-500">Rascunho</Badge>
+              )}
+            </div>
+
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+              {artigo.titulo}
+            </h1>
+
+            <div className="flex items-center gap-6 text-gray-600 mb-8 pb-8 border-b">
+              <span className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                {artigo.autor}
+              </span>
+              <span className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                {new Date(artigo.created_date).toLocaleDateString('pt-BR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </span>
+            </div>
+
+            {artigo.resumo && (
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-lg">
+                <p className="text-lg text-gray-700 italic">
+                  {artigo.resumo}
+                </p>
+              </div>
+            )}
+
+            <div className="prose prose-lg max-w-none mb-8">
+              <ReactMarkdown>{artigo.conteudo}</ReactMarkdown>
+            </div>
+
+            {artigo.tags && (
+              <div className="pt-8 border-t">
+                <div className="flex flex-wrap gap-2">
+                  {artigo.tags.split(',').map((tag, idx) => (
+                    <Badge key={idx} variant="outline">
+                      <Tag className="w-3 h-3 mr-1" />
+                      {tag.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {artigosRelacionados.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Artigos Relacionados
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {artigosRelacionados.map((relacionado) => {
+                const RelIcon = categoriaIcons[relacionado.categoria] || Newspaper;
+                return (
+                  <Link
+                    key={relacionado.id}
+                    to={createPageUrl(`ArtigoBlog?id=${relacionado.id}`)}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+                  >
+                    {relacionado.imagem_destaque && (
+                      <img
+                        src={relacionado.imagem_destaque}
+                        alt={relacionado.titulo}
+                        className="w-full h-40 object-cover"
+                      />
+                    )}
+                    <div className="p-4">
+                      <Badge className={`${categoriaColors[relacionado.categoria]} mb-2`}>
+                        <RelIcon className="w-3 h-3 mr-1" />
+                        {categoriaLabels[relacionado.categoria]}
+                      </Badge>
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                        {relacionado.titulo}
+                      </h3>
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {relacionado.resumo}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </article>
+    </div>
+  );
+}
