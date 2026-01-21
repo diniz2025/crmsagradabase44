@@ -8,6 +8,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: "Home", path: "Home", icon: Home },
     { name: "Rede Credenciada", path: "RedeCredenciada", icon: Heart },
+    { name: "Saúde e Bem-Estar", path: "Saude", icon: Heart },
     { name: "Blog", path: "Blog", icon: LayoutDashboard },
     { name: "CRM", path: "CRM", icon: LayoutDashboard },
     { name: "Privacidade", path: "Politica", icon: Shield }

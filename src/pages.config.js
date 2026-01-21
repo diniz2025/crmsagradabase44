@@ -4,6 +4,7 @@ import CRM from './pages/CRM';
 import Home from './pages/Home';
 import Politica from './pages/Politica';
 import RedeCredenciada from './pages/RedeCredenciada';
+import Saude from './pages/Saude';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "Home": Home,
     "Politica": Politica,
     "RedeCredenciada": RedeCredenciada,
+    "Saude": Saude,
 }
 
 export const pagesConfig = {
