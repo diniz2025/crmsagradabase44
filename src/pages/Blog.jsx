@@ -19,7 +19,8 @@ import {
   Briefcase,
   AlertTriangle,
   TrendingUp,
-  Plus
+  Plus,
+  ExternalLink
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ArtigoBlogModal from "../components/blog/ArtigoBlogModal";
@@ -110,6 +111,43 @@ export default function Blog() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Card de acesso ao Blog Oficial */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <Card className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                    <Newspaper className="w-6 h-6" />
+                    Blog Oficial DCG Seguros
+                  </h3>
+                  <p className="text-white/90 mb-4">
+                    Acesse nosso blog completo com mais artigos, notícias e conteúdos exclusivos sobre seguros, saúde e gestão empresarial.
+                  </p>
+                  <a
+                    href="https://www.dcgseguros.com.br/blog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-white text-[#4DBABC] hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg"
+                  >
+                    Acessar Blog Completo
+                    <ExternalLink className="w-5 h-5" />
+                  </a>
+                </div>
+                <div className="hidden md:block">
+                  <div className="bg-white/20 rounded-full p-6">
+                    <Newspaper className="w-16 h-16 text-white" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         <div className="mb-8 flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
