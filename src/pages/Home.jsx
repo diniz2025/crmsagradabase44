@@ -24,6 +24,7 @@ import FormularioContato from "../components/FormularioContato";
 import BeneficiosSection from "../components/BeneficiosSection";
 import ComoFunciona from "../components/ComoFunciona";
 import RedeCredenciada from "../components/RedeCredenciada";
+import ChatbotAtendimento from "../components/ChatbotAtendimento";
 
 export default function Home() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -296,6 +297,9 @@ export default function Home() {
           <FormularioContato mostrar={mostrarFormulario} />
         </div>
       </section>
+
+      {/* Chatbot */}
+      <ChatbotAtendimento />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12">
