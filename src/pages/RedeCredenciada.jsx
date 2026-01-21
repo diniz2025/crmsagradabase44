@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EstabelecimentoModal from "../components/rede/EstabelecimentoModal";
+import ImportarRedeModal from "../components/rede/ImportarRedeModal";
 
 const tipoLabels = {
   hospital: "Hospital",
