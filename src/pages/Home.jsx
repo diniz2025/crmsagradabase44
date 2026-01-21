@@ -304,13 +304,18 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
-              <div className="mb-4">
+              <a 
+                href="https://www.sinhoresosasco.com.br/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mb-4 hover:opacity-80 transition-opacity"
+              >
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691644e4652cae53371d6050/5767f8bd5_LogoSinHoRes_2021_vertical1.png" 
                   alt="SinHoRes Osasco" 
                   className="h-32 mb-4"
                 />
-              </div>
+              </a>
               <p className="text-sm">
                 Plano de sa&uacute;de especialmente desenvolvido para o setor de bares e restaurantes de Osasco e regi&atilde;o.
               </p>
