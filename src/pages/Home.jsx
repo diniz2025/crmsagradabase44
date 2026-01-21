@@ -23,7 +23,7 @@ import { motion } from "framer-motion";
 import FormularioContato from "../components/FormularioContato";
 import BeneficiosSection from "../components/BeneficiosSection";
 import ComoFunciona from "../components/ComoFunciona";
-import RedeCredenciada from "../components/RedeCredenciada";
+
 import ChatbotAtendimento from "../components/ChatbotAtendimento";
 
 export default function Home() {
@@ -178,9 +178,7 @@ export default function Home() {
       </section>
 
       <BeneficiosSection />
-      
-      <RedeCredenciada />
-      
+
       {/* Seção de Produtos/Seguros */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

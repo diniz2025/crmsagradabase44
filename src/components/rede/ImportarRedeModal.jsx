@@ -15,12 +15,18 @@ export default function ImportarRedeModal({ onClose }) {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "application/pdf") {
+    const tiposAceitos = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+    
+    if (file && tiposAceitos.includes(file.type)) {
       setArquivo(file);
       setStatus("idle");
       setMensagem("");
     } else {
-      setMensagem("Por favor, selecione um arquivo PDF válido");
+      setMensagem("Por favor, selecione um arquivo PDF ou Word (.doc, .docx)");
       setStatus("error");
     }
   };
@@ -40,9 +46,9 @@ export default function ImportarRedeModal({ onClose }) {
       const uploadResult = await base44.integrations.Core.UploadFile({ file: arquivo });
       const fileUrl = uploadResult.file_url;
 
-      // 2. Extrair dados do PDF
+      // 2. Extrair dados do arquivo (PDF ou Word)
       setStatus("extracting");
-      setMensagem("Extraindo dados do PDF... Isso pode levar alguns minutos para arquivos grandes.");
+      setMensagem("Extraindo dados do arquivo... Isso pode levar alguns minutos para arquivos grandes.");
 
       // Schema dos estabelecimentos que queremos extrair
       const jsonSchema = {
@@ -79,13 +85,13 @@ export default function ImportarRedeModal({ onClose }) {
       });
 
       if (extractResult.status === "error") {
-        throw new Error(extractResult.details || "Erro ao extrair dados do PDF");
+        throw new Error(extractResult.details || "Erro ao extrair dados do arquivo");
       }
 
       const estabelecimentos = extractResult.output?.estabelecimentos || [];
       
       if (estabelecimentos.length === 0) {
-        throw new Error("Nenhum estabelecimento encontrado no PDF");
+        throw new Error("Nenhum estabelecimento encontrado no arquivo");
       }
 
       // 3. Importar em lotes
@@ -161,27 +167,27 @@ export default function ImportarRedeModal({ onClose }) {
           {/* Upload de arquivo */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Arquivo PDF da Rede Credenciada
+              Arquivo da Rede Credenciada (PDF ou Word)
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4DBABC] transition-colors">
               <input
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.doc,.docx"
                 onChange={handleFileChange}
                 className="hidden"
-                id="pdf-upload"
+                id="file-upload"
                 disabled={status !== "idle" && status !== "error"}
               />
               <label
-                htmlFor="pdf-upload"
+                htmlFor="file-upload"
                 className="cursor-pointer flex flex-col items-center"
               >
                 <Upload className="w-12 h-12 text-gray-400 mb-2" />
                 <p className="text-sm text-gray-600">
-                  {arquivo ? arquivo.name : "Clique para selecionar o PDF"}
+                  {arquivo ? arquivo.name : "Clique para selecionar PDF ou Word"}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Suporta arquivos grandes (até 10MB+)
+                  Formatos aceitos: PDF, DOC, DOCX (até 10MB+)
                 </p>
               </label>
             </div>
@@ -228,10 +234,11 @@ export default function ImportarRedeModal({ onClose }) {
               <div className="text-sm text-yellow-800">
                 <p className="font-medium mb-1">Instruções:</p>
                 <ul className="list-disc list-inside space-y-1 text-xs">
-                  <li>O PDF deve conter a lista de estabelecimentos credenciados</li>
+                  <li>Aceita PDF ou Word com a lista de estabelecimentos credenciados</li>
                   <li>O sistema irá extrair automaticamente os dados usando IA</li>
                   <li>A importação pode levar alguns minutos para arquivos grandes</li>
                   <li>Os estabelecimentos serão adicionados à base existente</li>
+                  <li>Certifique-se de que o arquivo contém: nome, tipo, endereço e cidade</li>
                 </ul>
               </div>
             </div>
