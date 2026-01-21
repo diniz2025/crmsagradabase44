@@ -122,9 +122,9 @@ export default function Home() {
                   
                   <div className="space-y-4">
                     {[
-                      "Atendimento 24h de emerg&ecirc;ncia",
+                      "Atendimento 24h de emergência",
                       "Rede credenciada em Osasco",
-                      "Sem car&ecirc;ncia para urg&ecirc;ncias",
+                      "Sem carência para urgências",
                       "Cobertura completa"
                     ].map((item, index) => (
                       <div key={index} className="flex items-center gap-3">
