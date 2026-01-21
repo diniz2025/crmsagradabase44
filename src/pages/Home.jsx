@@ -62,8 +62,8 @@ export default function Home() {
               </Badge>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Plano de Sa&uacute;de para seu
-                <span className="block text-[#FF6B35]">Neg&oacute;cio de Alimenta&ccedil;&atilde;o</span>
+                Plano de Sa&uacute;de para
+                <span className="block text-[#FF6B35]">Bares e Restaurantes</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
@@ -274,7 +274,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Stethoscope className="w-16 h-16 mx-auto mb-6 text-[#FF6B35]" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Pronto para Proteger seu Neg&oacute;cio?
+            Pronto para Proteger sua Equipe?
           </h2>
           <p className="text-xl text-white/90 mb-8">
             Junte-se a centenas de estabelecimentos em Osasco que j&aacute; confiam no Sagrada Fam&iacute;lia
