@@ -17,7 +17,8 @@ import {
   Clock,
   Search,
   Plus,
-  MessageCircle
+  MessageCircle,
+  Upload
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EstabelecimentoModal from "../components/rede/EstabelecimentoModal";
@@ -61,6 +62,7 @@ export default function RedeCredenciada() {
   const [editingEstabelecimento, setEditingEstabelecimento] = useState(null);
   const [usuarioAtual, setUsuarioAtual] = useState(null);
   const [expandedCard, setExpandedCard] = useState(null);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   React.useEffect(() => {
     base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
@@ -117,16 +119,26 @@ export default function RedeCredenciada() {
               </p>
             </div>
             {isAdmin && (
-              <Button
-                onClick={() => {
-                  setEditingEstabelecimento(null);
-                  setShowModal(true);
-                }}
-                className="bg-[#FF6B35] hover:bg-[#E85A28]"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Adicionar
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowImportModal(true)}
+                  variant="outline"
+                  className="border-white text-white hover:bg-white/10"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Importar PDF
+                </Button>
+                <Button
+                  onClick={() => {
+                    setEditingEstabelecimento(null);
+                    setShowModal(true);
+                  }}
+                  className="bg-[#FF6B35] hover:bg-[#E85A28]"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -289,6 +301,12 @@ export default function RedeCredenciada() {
             setShowModal(false);
             setEditingEstabelecimento(null);
           }}
+        />
+      )}
+
+      {showImportModal && (
+        <ImportarRedeModal
+          onClose={() => setShowImportModal(false)}
         />
       )}
     </div>
