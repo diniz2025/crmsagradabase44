@@ -165,15 +165,100 @@ export default function ArtigoBlog() {
             )}
 
             <div className="prose prose-lg max-w-none mb-8">
-              <ReactMarkdown>{artigo.conteudo}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  h1: ({children}) => (
+                    <h1 className="text-3xl font-bold mt-8 mb-4 text-gray-900 border-b pb-3">
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({children}) => (
+                    <h2 className="text-2xl font-bold mt-8 mb-4 text-[#4DBABC]">
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({children}) => (
+                    <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+                      {children}
+                    </h3>
+                  ),
+                  p: ({children}) => (
+                    <p className="text-gray-700 leading-relaxed mb-5 text-base">
+                      {children}
+                    </p>
+                  ),
+                  ul: ({children}) => (
+                    <ul className="list-disc ml-6 mb-6 space-y-2">
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({children}) => (
+                    <ol className="list-decimal ml-6 mb-6 space-y-2">
+                      {children}
+                    </ol>
+                  ),
+                  li: ({children}) => (
+                    <li className="text-gray-700 leading-relaxed">
+                      {children}
+                    </li>
+                  ),
+                  blockquote: ({children}) => (
+                    <blockquote className="border-l-4 border-[#4DBABC] bg-[#4DBABC]/5 pl-6 pr-4 py-4 my-6 italic text-gray-700 rounded-r-lg">
+                      {children}
+                    </blockquote>
+                  ),
+                  a: ({href, children}) => (
+                    <a 
+                      href={href} 
+                      className="text-[#4DBABC] hover:text-[#45B1B3] underline font-medium" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      {children}
+                    </a>
+                  ),
+                  strong: ({children}) => (
+                    <strong className="font-bold text-gray-900">
+                      {children}
+                    </strong>
+                  ),
+                  em: ({children}) => (
+                    <em className="italic text-gray-700">
+                      {children}
+                    </em>
+                  ),
+                  code: ({inline, children}) => 
+                    inline ? (
+                      <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800">
+                        {children}
+                      </code>
+                    ) : (
+                      <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono my-4">
+                        {children}
+                      </code>
+                    ),
+                  hr: () => (
+                    <hr className="my-8 border-t-2 border-gray-200" />
+                  ),
+                }}
+              >
+                {artigo.conteudo}
+              </ReactMarkdown>
             </div>
 
             {artigo.tags && (
               <div className="pt-8 border-t">
+                <h3 className="text-sm font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Tags
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {artigo.tags.split(',').map((tag, idx) => (
-                    <Badge key={idx} variant="outline">
-                      <Tag className="w-3 h-3 mr-1" />
+                    <Badge 
+                      key={idx} 
+                      variant="outline"
+                      className="px-3 py-1 bg-gray-50 hover:bg-[#4DBABC]/10 hover:border-[#4DBABC] transition-colors"
+                    >
                       {tag.trim()}
                     </Badge>
                   ))}
@@ -185,7 +270,8 @@ export default function ArtigoBlog() {
 
         {artigosRelacionados.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Newspaper className="w-6 h-6 text-[#4DBABC]" />
               Artigos Relacionados
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
@@ -195,25 +281,32 @@ export default function ArtigoBlog() {
                   <Link
                     key={relacionado.id}
                     to={createPageUrl(`ArtigoBlog?id=${relacionado.id}`)}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+                    className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-[#4DBABC]/30"
                   >
                     {relacionado.imagem_destaque && (
-                      <img
-                        src={relacionado.imagem_destaque}
-                        alt={relacionado.titulo}
-                        className="w-full h-40 object-cover"
-                      />
+                      <div className="h-44 overflow-hidden">
+                        <img
+                          src={relacionado.imagem_destaque}
+                          alt={relacionado.titulo}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
                     )}
-                    <div className="p-4">
-                      <Badge className={`${categoriaColors[relacionado.categoria]} mb-2`}>
+                    <div className="p-5">
+                      <Badge className={`${categoriaColors[relacionado.categoria]} mb-3`}>
                         <RelIcon className="w-3 h-3 mr-1" />
                         {categoriaLabels[relacionado.categoria]}
                       </Badge>
-                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#4DBABC] transition-colors leading-snug">
                         {relacionado.titulo}
                       </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {relacionado.resumo}
+                      {relacionado.resumo && (
+                        <p className="text-sm text-gray-600 line-clamp-3 mb-2">
+                          {relacionado.resumo}
+                        </p>
+                      )}
+                      <p className="text-xs text-[#4DBABC] font-semibold group-hover:underline">
+                        Ler artigo →
                       </p>
                     </div>
                   </Link>
