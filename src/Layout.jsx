@@ -20,13 +20,18 @@ export default function Layout({ children, currentPageName }) {
       <nav className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <a 
+              href="https://www.sinhoresosasco.com.br/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+            >
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691644e4652cae53371d6050/624688f81_LogoSinHoRes_2021_horizontal1.png" 
                 alt="SinHoRes Osasco" 
                 className="h-12"
               />
-            </Link>
+            </a>
 
             <div className="hidden md:flex gap-1">
               {navItems.map((item) => (
