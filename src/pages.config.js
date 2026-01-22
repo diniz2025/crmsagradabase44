@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Politica from './pages/Politica';
 import RedeCredenciada from './pages/RedeCredenciada';
 import Saude from './pages/Saude';
+import Produtos from './pages/Produtos';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "Politica": Politica,
     "RedeCredenciada": RedeCredenciada,
     "Saude": Saude,
+    "Produtos": Produtos,
 }
 
 export const pagesConfig = {

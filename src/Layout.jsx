@@ -7,6 +7,7 @@ import ModalAceiteTermos from "./components/ModalAceiteTermos";
 export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: "Home", path: "Home", icon: Home },
+    { name: "Produtos", path: "Produtos", icon: LayoutDashboard },
     { name: "Rede Credenciada", path: "RedeCredenciada", icon: Heart },
     { name: "Saúde e Bem-Estar", path: "Saude", icon: Heart },
     { name: "Blog", path: "Blog", icon: LayoutDashboard },
