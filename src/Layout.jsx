@@ -39,14 +39,13 @@ export default function Layout({ children, currentPageName }) {
                 <Link
                   key={item.path}
                   to={createPageUrl(item.path)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all text-sm ${
+                  className={`px-4 py-2 rounded-full transition-all text-sm ${
                     currentPageName === item.path
                       ? "bg-[#FF6B35] text-white font-semibold"
                       : "text-white hover:bg-white/10"
                   }`}
                 >
-                  <item.icon className="w-4 h-4" />
-                  <span className="hidden lg:inline">{item.name}</span>
+                  {item.name}
                 </Link>
               ))}
             </div>
