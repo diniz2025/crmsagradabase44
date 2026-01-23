@@ -17,7 +17,8 @@ import {
   MessageCircle,
   Building2,
   Package,
-  BookOpen
+  BookOpen,
+  Star
 } from "lucide-react";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
@@ -34,6 +35,7 @@ import DistribuicaoLotes from "../components/crm/DistribuicaoLotes";
 import ManualVendedor from "../components/crm/ManualVendedor";
 import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
 import ImportacaoMassa from "../components/crm/ImportacaoMassa";
+import GerenciarDepoimentos from "../components/depoimentos/GerenciarDepoimentos";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -361,6 +363,10 @@ export default function CRM() {
                       <Package className="w-4 h-4" />
                       Distribuir Lotes
                     </TabsTrigger>
+                    <TabsTrigger value="depoimentos" className="flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                      Depoimentos
+                    </TabsTrigger>
                   </>
                 )}
               </TabsList>
@@ -465,6 +471,10 @@ export default function CRM() {
 
                 <TabsContent value="lotes" className="p-6">
                   <DistribuicaoLotes usuarioEmail={usuarioAtual?.email} />
+                </TabsContent>
+
+                <TabsContent value="depoimentos" className="p-6">
+                  <GerenciarDepoimentos />
                 </TabsContent>
               </>
             )}
