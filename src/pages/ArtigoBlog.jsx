@@ -18,6 +18,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import ComentariosArtigo from "../components/blog/ComentariosArtigo";
 
 const categoriaLabels = {
   plano_saude: "Plano de Saúde",
@@ -315,6 +316,9 @@ export default function ArtigoBlog() {
             </div>
           </div>
         )}
+
+        {/* Seção de Comentários */}
+        <ComentariosArtigo artigoId={artigo.id} />
       </article>
     </div>
   );
