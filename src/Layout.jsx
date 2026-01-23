@@ -78,7 +78,7 @@ export default function Layout({ children, currentPageName }) {
               A DCG Corretora de Seguros LTDA (CNPJ 16.383.565/0001-35) trata dados pessoais conforme a LGPD (Lei 13.709/2018). Este sistema adota controles de segurança e proteção de dados.
             </p>
             <p className="text-xs">
-              <strong>Contato:</strong> diniz@dcgseguros.com.br | 
+              <strong>Contato:</strong> (11) 99410-4891 | diniz@dcgseguros.com.br | 
               <Link to={createPageUrl("Politica")} className="text-blue-400 hover:text-blue-300 ml-2">
                 Política de Privacidade
               </Link>

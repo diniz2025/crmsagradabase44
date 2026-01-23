@@ -3,9 +3,9 @@ import Blog from './pages/Blog';
 import CRM from './pages/CRM';
 import Home from './pages/Home';
 import Politica from './pages/Politica';
+import Produtos from './pages/Produtos';
 import RedeCredenciada from './pages/RedeCredenciada';
 import Saude from './pages/Saude';
-import Produtos from './pages/Produtos';
 import __Layout from './Layout.jsx';
 
 
@@ -15,9 +15,9 @@ export const PAGES = {
     "CRM": CRM,
     "Home": Home,
     "Politica": Politica,
+    "Produtos": Produtos,
     "RedeCredenciada": RedeCredenciada,
     "Saude": Saude,
-    "Produtos": Produtos,
 }
 
 export const pagesConfig = {
