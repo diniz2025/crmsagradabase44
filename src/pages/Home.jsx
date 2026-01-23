@@ -332,7 +332,7 @@ export default function Home() {
                 <p className="text-gray-400 text-xs">SinHoRes Osasco, Alphaville e Regi&atilde;o</p>
                 <p className="flex items-center gap-2 mt-3">
                   <Phone className="w-4 h-4" />
-                  Entre em contato através do formulário
+                  WhatsApp: (11) 99410-4891
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
