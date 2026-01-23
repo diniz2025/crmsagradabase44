@@ -325,18 +325,18 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Contato</h4>
+              <h4 className="text-white font-semibold mb-4">Precisa de Ajuda para Escolher?</h4>
+              <p className="text-sm mb-4">Nossa equipe está pronta para encontrar a melhor solução para seu negócio</p>
               <div className="space-y-2 text-sm">
-                <p className="font-semibold text-white">Nadjair Diniz Barbosa</p>
-                <p className="text-gray-400 text-xs">Coordenador do Setor de Seguros</p>
-                <p className="text-gray-400 text-xs">SinHoRes Osasco, Alphaville e Regi&atilde;o</p>
-                <p className="flex items-center gap-2 mt-3">
+                <p className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
                   WhatsApp: (11) 99410-4891
                 </p>
                 <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Osasco, Alphaville e Regi&atilde;o
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  seguros@sinhoresseguros.com.br
                 </p>
               </div>
             </div>

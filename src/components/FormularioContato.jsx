@@ -51,7 +51,7 @@ Entre em contato com o cliente o mais breve possível!
 
       await base44.integrations.Core.SendEmail({
         from_name: "Site Sagrada Família",
-        to: "seguros@sinhoresosasco.com.br",
+        to: "seguros@sinhoresseguros.com.br",
         subject: `Novo Lead: ${data.nome_completo}`,
         body: emailBody
       });
