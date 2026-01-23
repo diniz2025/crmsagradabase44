@@ -18,7 +18,8 @@ import {
   Building2,
   Package,
   BookOpen,
-  Star
+  Star,
+  MessagesSquare
 } from "lucide-react";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
@@ -36,6 +37,7 @@ import ManualVendedor from "../components/crm/ManualVendedor";
 import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
 import ImportacaoMassa from "../components/crm/ImportacaoMassa";
 import GerenciarDepoimentos from "../components/depoimentos/GerenciarDepoimentos";
+import ModerarComentarios from "../components/blog/ModerarComentarios";
 
 export default function CRM() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -367,6 +369,10 @@ export default function CRM() {
                       <Star className="w-4 h-4" />
                       Depoimentos
                     </TabsTrigger>
+                    <TabsTrigger value="comentarios" className="flex items-center gap-2">
+                      <MessagesSquare className="w-4 h-4" />
+                      Comentários
+                    </TabsTrigger>
                   </>
                 )}
               </TabsList>
@@ -475,6 +481,10 @@ export default function CRM() {
 
                 <TabsContent value="depoimentos" className="p-6">
                   <GerenciarDepoimentos />
+                </TabsContent>
+
+                <TabsContent value="comentarios" className="p-6">
+                  <ModerarComentarios />
                 </TabsContent>
               </>
             )}
