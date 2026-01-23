@@ -23,6 +23,7 @@ import { motion } from "framer-motion";
 import FormularioContato from "../components/FormularioContato";
 import BeneficiosSection from "../components/BeneficiosSection";
 import ComoFunciona from "../components/ComoFunciona";
+import DepoimentosSection from "../components/depoimentos/DepoimentosSection";
 
 import ChatbotAtendimento from "../components/ChatbotAtendimento";
 
@@ -267,6 +268,9 @@ export default function Home() {
       </section>
       
       <ComoFunciona />
+
+      {/* Seção de Depoimentos */}
+      <DepoimentosSection />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] text-white">
