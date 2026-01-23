@@ -118,6 +118,24 @@ export default function Produtos() {
         </div>
       </div>
 
+      {/* Seção Destaque SinHoRes Seguros */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Card className="bg-gradient-to-r from-[#4DBABC] to-[#45B1B3] border-none shadow-xl">
+          <CardContent className="p-8 text-center">
+            <Shield className="w-16 h-16 text-white mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-white mb-3">
+              Menu de Produtos de Seguros para o Setor
+            </h2>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+              Desenvolvido e coordenado pelo setor <strong>SinHoRes Seguros</strong>
+            </p>
+            <p className="text-lg text-white/80 mt-2 max-w-2xl mx-auto">
+              Produtos exclusivos para bares, restaurantes e estabelecimentos do setor de alimentação
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Produtos Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
