@@ -50,7 +50,7 @@ export default function Produtos() {
         { nome: "Odonto Orto", valor: "R$ 89,90" }
       ],
       destaque: true,
-      link: "mailto:diniz@dcgseguros.com.br?subject=Interesse em Odonto Group",
+      link: "mailto:seguros@sinhoresseguros.com.br?subject=Interesse em Odonto Group",
       cor: "bg-cyan-500"
     },
     {
@@ -82,7 +82,7 @@ export default function Produtos() {
         "Roubo e furto qualificado",
         "Quebra de vidros"
       ],
-      link: "mailto:diniz@dcgseguros.com.br?subject=Interesse em Seguro Empresarial Tokio",
+      link: "mailto:seguros@sinhoresseguros.com.br?subject=Interesse em Seguro Empresarial Tokio",
       cor: "bg-orange-500"
     },
     {
@@ -97,7 +97,7 @@ export default function Produtos() {
         "Recuperação de dados",
         "Consultoria especializada"
       ],
-      link: "mailto:diniz@dcgseguros.com.br?subject=Interesse em Seguro Cyber Akad",
+      link: "mailto:seguros@sinhoresseguros.com.br?subject=Interesse em Seguro Cyber Akad",
       cor: "bg-purple-500"
     }
   ];
@@ -238,10 +238,10 @@ export default function Produtos() {
             <Button 
               size="lg"
               className="bg-white text-[#4DBABC] hover:bg-gray-100"
-              onClick={() => window.location.href = 'mailto:diniz@dcgseguros.com.br'}
+              onClick={() => window.location.href = 'mailto:seguros@sinhoresseguros.com.br'}
             >
               <Mail className="w-5 h-5 mr-2" />
-              diniz@dcgseguros.com.br
+              seguros@sinhoresseguros.com.br
             </Button>
             <Button 
               size="lg"
