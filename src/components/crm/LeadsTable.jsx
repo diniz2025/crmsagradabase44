@@ -4,22 +4,38 @@ import { useMutation } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Edit, 
-  MessageCircle, 
-  Mail, 
+import {
+  Edit,
+  MessageCircle,
+  Mail,
   ExternalLink,
   ChevronDown,
-  Phone
+  Phone,
+  Lock,
+  Unlock,
+  ShieldAlert
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "react-hot-toast";
+import ReservaBadge, { getReservaStatusUtil } from "./ReservaBadge";
+import ReservaTimer from "./ReservaTimer";
 
-export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRefetch }) {
+export default function LeadsTable({
+  leads,
+  isLoading,
+  onEdit,
+  vendedores,
+  onRefetch,
+  meuVendedorId,
+  isAdmin,
+  isSupervisor
+}) {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
@@ -33,6 +49,60 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
     Fechado: "bg-green-100 text-green-800",
     Descartado: "bg-gray-100 text-gray-800"
   };
+
+  // Mutation para reservar lead
+  const reservarMutation = useMutation({
+    mutationFn: async (leadId) => {
+      const agora = new Date();
+      const expiracao = new Date(agora.getTime() + 48 * 60 * 60 * 1000); // +48 horas
+
+      // Buscar lead atual para verificar se ainda está disponível
+      const leadAtual = leads.find(l => l.id === leadId);
+
+      if (leadAtual?.reservado_por && leadAtual.reservado_por !== meuVendedorId) {
+        // Verificar se expirou
+        if (leadAtual.expira_reserva_em) {
+          const dataExpiracao = new Date(leadAtual.expira_reserva_em);
+          if (dataExpiracao > agora) {
+            throw new Error('Este lead já foi reservado por outro vendedor');
+          }
+        } else {
+          throw new Error('Este lead já foi reservado por outro vendedor');
+        }
+      }
+
+      return base44.entities.Lead.update(leadId, {
+        reservado_por: meuVendedorId,
+        reservado_em: agora.toISOString(),
+        expira_reserva_em: expiracao.toISOString()
+      });
+    },
+    onSuccess: () => {
+      toast.success('Lead reservado com sucesso! Você tem 48h para trabalhar nele.');
+      onRefetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Erro ao reservar lead');
+    }
+  });
+
+  // Mutation para liberar reserva (apenas admin/supervisor)
+  const liberarMutation = useMutation({
+    mutationFn: async (leadId) => {
+      return base44.entities.Lead.update(leadId, {
+        reservado_por: null,
+        reservado_em: null,
+        expira_reserva_em: null
+      });
+    },
+    onSuccess: () => {
+      toast.success('Reserva liberada com sucesso!');
+      onRefetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Erro ao liberar reserva');
+    }
+  });
 
   const getEnrichLinks = (lead) => {
     const q = encodeURIComponent(`${lead.nome_completo || ''} ${lead.cidade || ''}`.trim());
@@ -62,6 +132,32 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
     window.location.href = `mailto:${lead.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
+  const handleReservar = (leadId) => {
+    if (!meuVendedorId) {
+      toast.error('Você precisa estar logado como vendedor para reservar leads');
+      return;
+    }
+    reservarMutation.mutate(leadId);
+  };
+
+  const handleLiberar = (leadId) => {
+    if (!isAdmin && !isSupervisor) {
+      toast.error('Apenas supervisores e administradores podem liberar reservas');
+      return;
+    }
+    liberarMutation.mutate(leadId);
+  };
+
+  const podeReservar = (lead) => {
+    const status = getReservaStatusUtil(lead, meuVendedorId);
+    return status === 'disponivel' && meuVendedorId;
+  };
+
+  const podeLiberar = (lead) => {
+    const status = getReservaStatusUtil(lead, meuVendedorId);
+    return (status === 'meu' || status === 'outro') && (isAdmin || isSupervisor);
+  };
+
   if (isLoading) {
     return <div className="text-center py-8">Carregando leads...</div>;
   }
@@ -82,6 +178,7 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
           <TableHeader>
             <TableRow className="bg-gray-50">
               <TableHead className="font-semibold">Nome/Empresa</TableHead>
+              <TableHead className="font-semibold">Reserva</TableHead>
               <TableHead className="font-semibold">Score</TableHead>
               <TableHead className="font-semibold">CNPJ</TableHead>
               <TableHead className="font-semibold">Cidade</TableHead>
@@ -94,13 +191,36 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
           <TableBody>
             {paginatedLeads.map((lead) => {
               const links = getEnrichLinks(lead);
+              const reservaStatus = getReservaStatusUtil(lead, meuVendedorId);
+
               return (
-                <TableRow key={lead.id} className="hover:bg-gray-50">
+                <TableRow
+                  key={lead.id}
+                  className={`hover:bg-gray-50 ${
+                    reservaStatus === 'meu' ? 'bg-amber-50/50' :
+                    reservaStatus === 'outro' ? 'bg-red-50/30' : ''
+                  }`}
+                >
                   <TableCell>
                     <div className="font-medium">{lead.nome_completo}</div>
                     {lead.contato && (
                       <div className="text-sm text-gray-500">{lead.contato}</div>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <ReservaBadge
+                        lead={lead}
+                        meuVendedorId={meuVendedorId}
+                        vendedores={vendedores}
+                      />
+                      {(reservaStatus === 'meu' || isAdmin || isSupervisor) && lead.expira_reserva_em && (
+                        <ReservaTimer
+                          lead={lead}
+                          meuVendedorId={meuVendedorId}
+                        />
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {lead.score !== undefined && lead.score !== null ? (
@@ -133,7 +253,35 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
                   </TableCell>
                   <TableCell className="text-sm">{lead.vendedor || '-'}</TableCell>
                   <TableCell>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
+                      {/* Botão Reservar */}
+                      {podeReservar(lead) && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleReservar(lead.id)}
+                          disabled={reservarMutation.isPending}
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          title="Reservar lead por 48h"
+                        >
+                          <Lock className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* Botão Liberar (apenas admin/supervisor) */}
+                      {podeLiberar(lead) && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleLiberar(lead.id)}
+                          disabled={liberarMutation.isPending}
+                          className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          title="Liberar reserva"
+                        >
+                          <Unlock className="w-4 h-4" />
+                        </Button>
+                      )}
+
                       <Button
                         variant="ghost"
                         size="sm"
@@ -141,7 +289,7 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
-                      
+
                       {lead.telefone && (
                         <Button
                           variant="ghost"
@@ -152,7 +300,7 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
                           <MessageCircle className="w-4 h-4" />
                         </Button>
                       )}
-                      
+
                       {lead.email && (
                         <Button
                           variant="ghost"
@@ -203,6 +351,31 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
                               </a>
                             </DropdownMenuItem>
                           )}
+
+                          {/* Opções de reserva no dropdown também */}
+                          {(podeReservar(lead) || podeLiberar(lead)) && (
+                            <>
+                              <DropdownMenuSeparator />
+                              {podeReservar(lead) && (
+                                <DropdownMenuItem
+                                  onClick={() => handleReservar(lead.id)}
+                                  className="text-green-600"
+                                >
+                                  <Lock className="w-4 h-4 mr-2" />
+                                  Reservar Lead (48h)
+                                </DropdownMenuItem>
+                              )}
+                              {podeLiberar(lead) && (
+                                <DropdownMenuItem
+                                  onClick={() => handleLiberar(lead.id)}
+                                  className="text-amber-600"
+                                >
+                                  <Unlock className="w-4 h-4 mr-2" />
+                                  Liberar Reserva
+                                </DropdownMenuItem>
+                              )}
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
@@ -212,6 +385,22 @@ export default function LeadsTable({ leads, isLoading, onEdit, vendedores, onRef
             })}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Legenda de cores */}
+      <div className="flex gap-4 mt-4 text-xs text-gray-500">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-green-100 border border-green-200"></div>
+          <span>Disponível</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-amber-100 border border-amber-200"></div>
+          <span>Meu Lead</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-red-100 border border-red-200"></div>
+          <span>Reservado por outro</span>
+        </div>
       </div>
 
       {totalPages > 1 && (

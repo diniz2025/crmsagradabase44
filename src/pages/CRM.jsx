@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Users, 
+import {
+  Users,
   BarChart3,
   TrendingUp,
-  Kanban, 
+  Kanban,
   Settings,
   Plus,
   Download,
@@ -19,8 +19,11 @@ import {
   Package,
   BookOpen,
   Star,
-  MessagesSquare
+  MessagesSquare,
+  Lock,
+  RefreshCw
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import LeadsTable from "../components/crm/LeadsTable";
 import PipelineKanban from "../components/crm/PipelineKanban";
 import KPICards from "../components/crm/KPICards";
@@ -38,8 +41,10 @@ import GuiaEscalabilidade from "../components/crm/GuiaEscalabilidade";
 import ImportacaoMassa from "../components/crm/ImportacaoMassa";
 import GerenciarDepoimentos from "../components/depoimentos/GerenciarDepoimentos";
 import ModerarComentarios from "../components/blog/ModerarComentarios";
+import { getReservaStatusUtil } from "../components/crm/ReservaBadge";
 
 export default function CRM() {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showModal, setShowModal] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
@@ -47,10 +52,11 @@ export default function CRM() {
   const [filtroStatus, setFiltroStatus] = useState("");
   const [filtroVendedor, setFiltroVendedor] = useState("");
   const [filtroCorretora, setFiltroCorretora] = useState("");
+  const [filtroReserva, setFiltroReserva] = useState(""); // novo filtro de reserva
   const [usuarioAtual, setUsuarioAtual] = useState(null);
 
   // Pega o usuário atual
-  React.useEffect(() => {
+  useEffect(() => {
     base44.auth.me().then(user => setUsuarioAtual(user)).catch(() => {});
   }, []);
 
@@ -74,13 +80,14 @@ export default function CRM() {
   const meuVendedor = vendedores.find(v => v.email === usuarioAtual?.email);
   const isSupervisor = meuVendedor?.tipo === 'supervisor';
   const minhaCorretoraId = meuVendedor?.corretora_id;
+  const meuVendedorId = meuVendedor?.id;
 
   // Query otimizada com filtro no servidor e limite
   const { data: leads = [], isLoading, refetch, error } = useQuery({
     queryKey: ['leads', filtroStatus, filtroCorretora, minhaCorretoraId, meuVendedor?.nome],
     queryFn: async () => {
       const query = {};
-      
+
       // Aplica filtros no servidor para reduzir dados trafegados
       if (!isAdmin) {
         if (isSupervisor && minhaCorretoraId) {
@@ -89,10 +96,10 @@ export default function CRM() {
           query.vendedor = meuVendedor.nome;
         }
       }
-      
+
       if (filtroStatus) query.status = filtroStatus;
       if (filtroCorretora && isAdmin) query.corretora_id = filtroCorretora;
-      
+
       return base44.entities.Lead.filter(query, '-updated_date', 1000);
     },
     initialData: [],
@@ -108,6 +115,52 @@ export default function CRM() {
     staleTime: 60000,
   });
 
+  // Função para verificar e limpar reservas expiradas
+  const verificarExpiracoes = useCallback(async () => {
+    const agora = new Date();
+    const leadsExpirados = leads.filter(lead => {
+      if (!lead.reservado_por || !lead.expira_reserva_em) return false;
+      const expiracao = new Date(lead.expira_reserva_em);
+      return expiracao < agora;
+    });
+
+    if (leadsExpirados.length > 0) {
+      console.log(`[Reservas] Encontrados ${leadsExpirados.length} leads com reservas expiradas`);
+
+      // Limpar reservas expiradas em lote
+      for (const lead of leadsExpirados) {
+        try {
+          await base44.entities.Lead.update(lead.id, {
+            reservado_por: null,
+            reservado_em: null,
+            expira_reserva_em: null
+          });
+          console.log(`[Reservas] Reserva expirada liberada para lead ${lead.id}`);
+        } catch (err) {
+          console.error(`[Reservas] Erro ao liberar lead ${lead.id}:`, err);
+        }
+      }
+
+      // Atualizar lista de leads
+      refetch();
+    }
+  }, [leads, refetch]);
+
+  // Verificar expirações a cada 1 minuto
+  useEffect(() => {
+    // Verificar imediatamente ao carregar
+    if (leads.length > 0) {
+      verificarExpiracoes();
+    }
+
+    // Configurar intervalo de verificação
+    const interval = setInterval(() => {
+      verificarExpiracoes();
+    }, 60000); // 1 minuto
+
+    return () => clearInterval(interval);
+  }, [verificarExpiracoes, leads.length]);
+
   const handleEdit = (lead) => {
     setEditingLead(lead);
     setShowModal(true);
@@ -119,7 +172,7 @@ export default function CRM() {
   };
 
   const handleExport = () => {
-    const headers = ['nome_completo','cnpj','cidade','telefone','email','contato','status','vendedor','observacoes'];
+    const headers = ['nome_completo','cnpj','cidade','telefone','email','contato','status','vendedor','observacoes','reservado_por','reservado_em','expira_reserva_em'];
     const lines = [headers.join(',')].concat(
       leads.map(e => headers.map(h => `"${(e[h]||'').toString().replace(/"/g,'""')}"`).join(','))
     );
@@ -133,21 +186,21 @@ export default function CRM() {
   const handleImport = async (e) => {
     const file = e.target.files[0];
     console.log('Arquivo selecionado:', file);
-    
+
     if (!file) {
       console.log('Nenhum arquivo selecionado');
       return;
     }
-    
+
     alert('Importando arquivo: ' + file.name);
-    
+
     try {
       const text = await file.text();
       console.log('Conteúdo do arquivo:', text.substring(0, 200));
-      
+
       const lines = text.split(/\r?\n/).filter(line => line.trim());
       console.log('Número de linhas:', lines.length);
-      
+
       if (lines.length < 2) {
         alert('Arquivo CSV vazio ou inválido');
         e.target.value = '';
@@ -159,7 +212,7 @@ export default function CRM() {
         const result = [];
         let current = '';
         let inQuotes = false;
-        
+
         for (let i = 0; i < line.length; i++) {
           const char = line[i];
           if (char === '"') {
@@ -177,7 +230,7 @@ export default function CRM() {
 
       const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/[\s]/g, '_'));
       console.log('Headers detectados:', headers);
-      
+
       const newLeads = [];
       for (let i = 1; i < lines.length; i++) {
         const values = parseCSVLine(lines[i]);
@@ -192,15 +245,15 @@ export default function CRM() {
           vendedor: vendedores[0]?.nome || '',
           corretora_id: minhaCorretoraId || corretoras[0]?.id || ''
         };
-        
+
         if (lead.nome_completo && lead.nome_completo.trim()) {
           newLeads.push(lead);
         }
       }
-      
+
       console.log('Leads processados:', newLeads.length);
       console.log('Exemplo de lead:', newLeads[0]);
-      
+
       if (newLeads.length === 0) {
         alert('Nenhum lead válido encontrado no CSV');
         e.target.value = '';
@@ -212,35 +265,35 @@ export default function CRM() {
       // Importa em lotes pequenos com delay para evitar rate limit
       const BATCH_SIZE = 20;
       let importados = 0;
-      
+
       for (let i = 0; i < newLeads.length; i += BATCH_SIZE) {
         const batch = newLeads.slice(i, i + BATCH_SIZE);
-        
+
         try {
           await base44.entities.Lead.bulkCreate(batch);
           importados += batch.length;
           console.log(`Importados ${importados}/${newLeads.length} leads`);
-          
+
           // Delay de 500ms entre lotes para evitar rate limit
           if (i + BATCH_SIZE < newLeads.length) {
             await new Promise(resolve => setTimeout(resolve, 500));
           }
         } catch (batchError) {
           console.error('Erro no lote:', batchError);
-          alert(`⚠️ Erro parcial: ${importados} leads importados antes do erro. Tente novamente com menos leads.`);
+          alert(`Erro parcial: ${importados} leads importados antes do erro. Tente novamente com menos leads.`);
           e.target.value = '';
           await refetch();
           return;
         }
       }
-      
+
       await refetch();
-      alert(`✅ ${newLeads.length} leads importados com sucesso!`);
+      alert(`${newLeads.length} leads importados com sucesso!`);
     } catch (error) {
       console.error('Erro completo ao importar:', error);
-      alert('❌ Erro ao importar CSV: ' + error.message);
+      alert('Erro ao importar CSV: ' + error.message);
     }
-    
+
     e.target.value = '';
   };
 
@@ -249,11 +302,11 @@ export default function CRM() {
       alert('Apenas administradores podem limpar a base');
       return;
     }
-    
+
     if (!confirm('Tem certeza que deseja excluir TODOS os leads? Esta ação não pode ser desfeita.')) {
       return;
     }
-    
+
     try {
       // Deleta em lotes de 100 para evitar timeout
       const BATCH_SIZE = 100;
@@ -268,19 +321,67 @@ export default function CRM() {
     }
   };
 
-  // Filtragem otimizada - apenas busca e vendedor (status e corretora já filtrados no servidor)
+  // Filtragem otimizada - inclui filtro de reserva
   const filteredLeads = React.useMemo(() => {
     return leads.filter(lead => {
-      const searchMatch = filtro === '' || 
+      const searchMatch = filtro === '' ||
         (lead.nome_completo || '').toLowerCase().includes(filtro.toLowerCase()) ||
         (lead.cidade || '').toLowerCase().includes(filtro.toLowerCase()) ||
         (lead.telefone || '').toLowerCase().includes(filtro.toLowerCase());
-      
+
       const vendedorMatch = !filtroVendedor || lead.vendedor === filtroVendedor;
-      
-      return searchMatch && vendedorMatch;
+
+      // Filtro de reserva
+      let reservaMatch = true;
+      if (filtroReserva) {
+        const reservaStatus = getReservaStatusUtil(lead, meuVendedorId);
+        switch (filtroReserva) {
+          case 'disponivel':
+            reservaMatch = reservaStatus === 'disponivel';
+            break;
+          case 'meu':
+            reservaMatch = reservaStatus === 'meu';
+            break;
+          case 'outro':
+            reservaMatch = reservaStatus === 'outro';
+            break;
+          case 'reservados':
+            reservaMatch = reservaStatus === 'meu' || reservaStatus === 'outro';
+            break;
+          default:
+            reservaMatch = true;
+        }
+      }
+
+      // Para vendedores normais: só mostra leads disponíveis ou seus próprios
+      if (!isAdmin && !isSupervisor && meuVendedorId) {
+        const reservaStatus = getReservaStatusUtil(lead, meuVendedorId);
+        if (reservaStatus === 'outro') {
+          return false; // Não mostra leads reservados por outros vendedores
+        }
+      }
+
+      return searchMatch && vendedorMatch && reservaMatch;
     });
-  }, [leads, filtro, filtroVendedor]);
+  }, [leads, filtro, filtroVendedor, filtroReserva, meuVendedorId, isAdmin, isSupervisor]);
+
+  // Contadores para o dashboard
+  const contadoresReserva = React.useMemo(() => {
+    const contadores = {
+      disponiveis: 0,
+      meusReservados: 0,
+      outrosReservados: 0
+    };
+
+    leads.forEach(lead => {
+      const status = getReservaStatusUtil(lead, meuVendedorId);
+      if (status === 'disponivel') contadores.disponiveis++;
+      else if (status === 'meu') contadores.meusReservados++;
+      else if (status === 'outro') contadores.outrosReservados++;
+    });
+
+    return contadores;
+  }, [leads, meuVendedorId]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -291,6 +392,18 @@ export default function CRM() {
             <div>
               <h1 className="text-3xl font-bold mb-2">CRM Sagrada Família</h1>
               <p className="text-blue-100">Gestão completa de leads e vendas</p>
+              {meuVendedor && (
+                <div className="flex gap-4 mt-2 text-sm text-blue-200">
+                  <span className="flex items-center gap-1">
+                    <Lock className="w-3 h-3" />
+                    Meus leads: {contadoresReserva.meusReservados}
+                  </span>
+                  <span>Disponíveis: {contadoresReserva.disponiveis}</span>
+                  {(isAdmin || isSupervisor) && (
+                    <span>Reservados (outros): {contadoresReserva.outrosReservados}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex gap-3">
               <Button onClick={handleNew} className="bg-amber-500 hover:bg-amber-600">
@@ -301,13 +414,21 @@ export default function CRM() {
                 <Download className="w-4 h-4 mr-2" />
                 Exportar
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="bg-white/10 hover:bg-white/20 border-white/30 text-white cursor-pointer"
                 onClick={() => setActiveTab("config")}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Importar em Massa
+              </Button>
+              <Button
+                variant="outline"
+                className="bg-white/10 hover:bg-white/20 border-white/30 text-white"
+                onClick={() => refetch()}
+                title="Atualizar lista"
+              >
+                <RefreshCw className="w-4 h-4" />
               </Button>
               {isAdmin && leads.length > 0 && (
                 <Button onClick={handleClearAll} variant="outline" className="bg-red-500/20 hover:bg-red-500/30 border-red-300 text-white">
@@ -379,7 +500,7 @@ export default function CRM() {
             </div>
 
             <TabsContent value="dashboard" className="p-6">
-              <DashboardDetalhado 
+              <DashboardDetalhado
                 leads={filteredLeads}
                 vendedores={vendedores}
                 corretoras={corretoras}
@@ -388,7 +509,7 @@ export default function CRM() {
             </TabsContent>
 
             <TabsContent value="tabela" className="p-6">
-              <div className="mb-6 flex gap-4">
+              <div className="mb-6 flex flex-wrap gap-4">
                 <Input
                   placeholder="Buscar por nome, cidade ou telefone..."
                   value={filtro}
@@ -417,6 +538,24 @@ export default function CRM() {
                     <option key={v.id} value={v.nome}>{v.nome}</option>
                   ))}
                 </select>
+
+                {/* Filtro de Reserva */}
+                <select
+                  value={filtroReserva}
+                  onChange={(e) => setFiltroReserva(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                >
+                  <option value="">Todas reservas</option>
+                  <option value="disponivel">Disponíveis</option>
+                  <option value="meu">Meus leads</option>
+                  {(isAdmin || isSupervisor) && (
+                    <>
+                      <option value="outro">Reservados (outros)</option>
+                      <option value="reservados">Todos reservados</option>
+                    </>
+                  )}
+                </select>
+
                 {isAdmin && (
                   <select
                     value={filtroCorretora}
@@ -431,17 +570,20 @@ export default function CRM() {
                 )}
               </div>
 
-              <LeadsTable 
+              <LeadsTable
                 leads={filteredLeads}
                 isLoading={isLoading}
                 onEdit={handleEdit}
                 vendedores={vendedores}
                 onRefetch={refetch}
+                meuVendedorId={meuVendedorId}
+                isAdmin={isAdmin}
+                isSupervisor={isSupervisor}
               />
             </TabsContent>
 
             <TabsContent value="kanban" className="p-6">
-              <PipelineKanban 
+              <PipelineKanban
                 leads={filteredLeads}
                 onRefetch={refetch}
                 onEdit={handleEdit}
@@ -450,7 +592,7 @@ export default function CRM() {
 
             <TabsContent value="config" className="p-6 space-y-6">
               {isAdmin && <GuiaEscalabilidade />}
-              <ImportacaoMassa 
+              <ImportacaoMassa
                 onComplete={refetch}
                 vendedores={vendedores}
                 corretoras={corretoras}
@@ -505,6 +647,9 @@ export default function CRM() {
             setShowModal(false);
             setEditingLead(null);
           }}
+          meuVendedorId={meuVendedorId}
+          isAdmin={isAdmin}
+          isSupervisor={isSupervisor}
         />
       )}
     </div>

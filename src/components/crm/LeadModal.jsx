@@ -6,9 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Save } from "lucide-react";
+import { X, Save, Lock, Unlock, Clock, User, AlertTriangle } from "lucide-react";
+import { toast } from "react-hot-toast";
+import ReservaBadge, { getReservaStatusUtil } from "./ReservaBadge";
+import ReservaTimer from "./ReservaTimer";
 
-export default function LeadModal({ lead, vendedores, onClose, onSave }) {
+export default function LeadModal({
+  lead,
+  vendedores,
+  onClose,
+  onSave,
+  meuVendedorId,
+  isAdmin,
+  isSupervisor
+}) {
   const [formData, setFormData] = useState({
     nome_completo: lead?.nome_completo || '',
     cnpj: lead?.cnpj || '',
@@ -23,12 +34,16 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
     observacoes: lead?.observacoes || ''
   });
 
+  // Verificar status da reserva
+  const reservaStatus = lead ? getReservaStatusUtil(lead, meuVendedorId) : null;
+  const vendedorReserva = vendedores.find(v => v.id === lead?.reservado_por);
+
   const saveMutation = useMutation({
     mutationFn: async (data) => {
       let result;
       if (lead?.id) {
         result = await base44.entities.Lead.update(lead.id, data);
-        
+
         // Se mudou o status, registrar no histórico
         if (lead.status !== data.status) {
           await base44.entities.HistoricoStatus.create({
@@ -40,7 +55,7 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
         }
       } else {
         result = await base44.entities.Lead.create(data);
-        
+
         // Registrar status inicial no histórico
         await base44.entities.HistoricoStatus.create({
           lead_id: result.id,
@@ -56,6 +71,45 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
     },
   });
 
+  // Mutation para reservar lead
+  const reservarMutation = useMutation({
+    mutationFn: async () => {
+      const agora = new Date();
+      const expiracao = new Date(agora.getTime() + 48 * 60 * 60 * 1000);
+
+      return base44.entities.Lead.update(lead.id, {
+        reservado_por: meuVendedorId,
+        reservado_em: agora.toISOString(),
+        expira_reserva_em: expiracao.toISOString()
+      });
+    },
+    onSuccess: () => {
+      toast.success('Lead reservado com sucesso! Você tem 48h para trabalhar nele.');
+      onSave();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Erro ao reservar lead');
+    }
+  });
+
+  // Mutation para liberar reserva
+  const liberarMutation = useMutation({
+    mutationFn: async () => {
+      return base44.entities.Lead.update(lead.id, {
+        reservado_por: null,
+        reservado_em: null,
+        expira_reserva_em: null
+      });
+    },
+    onSuccess: () => {
+      toast.success('Reserva liberada com sucesso!');
+      onSave();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Erro ao liberar reserva');
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     saveMutation.mutate(formData);
@@ -63,6 +117,18 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const formatarData = (dataISO) => {
+    if (!dataISO) return '-';
+    const data = new Date(dataISO);
+    return data.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -76,6 +142,87 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
             <X className="w-5 h-5" />
           </Button>
         </div>
+
+        {/* Seção de Reserva - aparece apenas para leads existentes */}
+        {lead && (
+          <div className={`px-6 py-4 border-b ${
+            reservaStatus === 'meu' ? 'bg-amber-50' :
+            reservaStatus === 'outro' ? 'bg-red-50' :
+            'bg-green-50'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <ReservaBadge
+                  lead={lead}
+                  meuVendedorId={meuVendedorId}
+                  vendedores={vendedores}
+                />
+
+                {lead.reservado_por && (
+                  <div className="text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      <span>
+                        Reservado por: <strong>{vendedorReserva?.nome || 'Desconhecido'}</strong>
+                      </span>
+                    </div>
+                    {lead.reservado_em && (
+                      <div className="flex items-center gap-2 mt-1 text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>Em: {formatarData(lead.reservado_em)}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {(reservaStatus === 'meu' || isAdmin || isSupervisor) && lead.expira_reserva_em && (
+                  <div className="border-l pl-4 ml-4">
+                    <ReservaTimer lead={lead} meuVendedorId={meuVendedorId} />
+                    <div className="text-xs text-gray-500 mt-1">
+                      Expira em: {formatarData(lead.expira_reserva_em)}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                {reservaStatus === 'disponivel' && meuVendedorId && (
+                  <Button
+                    type="button"
+                    onClick={() => reservarMutation.mutate()}
+                    disabled={reservarMutation.isPending}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    {reservarMutation.isPending ? 'Reservando...' : 'Reservar Lead'}
+                  </Button>
+                )}
+
+                {(reservaStatus === 'meu' || reservaStatus === 'outro') && (isAdmin || isSupervisor) && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => liberarMutation.mutate()}
+                    disabled={liberarMutation.isPending}
+                    className="border-amber-500 text-amber-600 hover:bg-amber-50"
+                  >
+                    <Unlock className="w-4 h-4 mr-2" />
+                    {liberarMutation.isPending ? 'Liberando...' : 'Liberar Reserva'}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {reservaStatus === 'outro' && !isAdmin && !isSupervisor && (
+              <div className="mt-3 flex items-center gap-2 text-amber-700 bg-amber-100 rounded-lg p-3">
+                <AlertTriangle className="w-5 h-5" />
+                <span className="text-sm">
+                  Este lead está reservado por outro vendedor. Você pode visualizar, mas não poderá fazer alterações significativas.
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
@@ -224,8 +371,8 @@ export default function LeadModal({ lead, vendedores, onClose, onSave }) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={saveMutation.isPending}
               className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
             >
