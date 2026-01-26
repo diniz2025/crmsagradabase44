@@ -28,8 +28,7 @@ export default function Produtos() {
         "Sem carência para urgências"
       ],
       destaque: true,
-      link: "https://www.sagradafamiliasaude.com.br/",
-      linkRede: "https://www.sagradafamiliasaude.com.br/rede-referenciada/",
+      link: "/RedeCredenciada",
       cor: "bg-blue-500"
     },
     {
@@ -198,25 +197,19 @@ export default function Produtos() {
                   )}
 
                   <div className="space-y-2 pt-4">
-                    {produto.link && (
-                      <Button 
-                        className="w-full bg-[#4DBABC] hover:bg-[#45B1B3]"
-                        onClick={() => window.open(produto.link, '_blank')}
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Saiba Mais
-                      </Button>
-                    )}
-                    
-                    {produto.linkRede && (
-                      <Button 
-                        variant="outline"
-                        className="w-full border-[#4DBABC] text-[#4DBABC] hover:bg-[#4DBABC]/10"
-                        onClick={() => window.open(produto.linkRede, '_blank')}
-                      >
-                        Ver Rede Credenciada
-                      </Button>
-                    )}
+                    <Button 
+                      className="w-full bg-[#4DBABC] hover:bg-[#45B1B3]"
+                      onClick={() => {
+                        if (produto.link.startsWith('/')) {
+                          window.location.href = produto.link;
+                        } else {
+                          window.open(produto.link, '_blank');
+                        }
+                      }}
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      {produto.nome === "Plano de Saúde Sagrada Família" ? "Ver Rede Credenciada" : "Saiba Mais"}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

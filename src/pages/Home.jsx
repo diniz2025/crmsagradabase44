@@ -3,6 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
 import { 
   Heart, 
   Shield, 
@@ -206,12 +208,19 @@ export default function Home() {
               <p className="text-white/90 mb-6">
                 Cobertura completa para voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
               </p>
-              <Button 
-                onClick={scrollToForm}
-                className="w-full bg-[#FF6B35] hover:bg-[#E85A28] text-white"
-              >
-                Contratar Agora
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Link to={createPageUrl("RedeCredenciada")}>
+                  <Button className="w-full bg-white text-[#4DBABC] hover:bg-gray-100">
+                    Ver Rede Credenciada
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={scrollToForm}
+                  className="w-full bg-[#FF6B35] hover:bg-[#E85A28] text-white"
+                >
+                  Contratar Agora
+                </Button>
+              </div>
             </motion.div>
 
             <motion.div
