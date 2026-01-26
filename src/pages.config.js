@@ -6,6 +6,7 @@ import Politica from './pages/Politica';
 import Produtos from './pages/Produtos';
 import RedeCredenciada from './pages/RedeCredenciada';
 import Saude from './pages/Saude';
+import ImportarRede from './pages/ImportarRede';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "Produtos": Produtos,
     "RedeCredenciada": RedeCredenciada,
     "Saude": Saude,
+    "ImportarRede": ImportarRede,
 }
 
 export const pagesConfig = {
