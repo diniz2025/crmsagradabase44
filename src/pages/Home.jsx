@@ -42,6 +42,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Banner Principal - SinHoRes Osasco */}
+      <section className="bg-gradient-to-r from-[#FF6B35] to-[#E85A28] text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
+            <Shield className="w-10 h-10 flex-shrink-0" />
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold">
+                SinHoRes Osasco, Alphaville e Regi&atilde;o
+              </h2>
+              <p className="text-white/95 text-sm md:text-base">
+                Prote&ccedil;&atilde;o Completa para sua Empresa: Sa&uacute;de, Seguros Empresariais, Patrimoniais, Odontol&oacute;gicos e RH
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#4DBABC] via-[#5AC0C2] to-[#45B1B3] text-white">
         <div className="absolute inset-0 opacity-10">
@@ -52,38 +69,104 @@ export default function Home() {
           }} />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center lg:text-left lg:flex lg:items-center lg:justify-between"
           >
-            <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <Badge className="mb-6 bg-[#FF6B35] hover:bg-[#E85A28] text-white border-none text-sm px-4 py-2">
-                <MapPin className="w-4 h-4 mr-2" />
-                Osasco e Regi&atilde;o
+            {/* Destaque Institucional */}
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-white/20 hover:bg-white/30 text-white border-none text-base px-6 py-3">
+                <MapPin className="w-5 h-5 mr-2" />
+                Osasco, Alphaville e Regi&atilde;o
               </Badge>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Plano de Sa&uacute;de para
-                <span className="block text-[#FF6B35]">Bares e Restaurantes</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Proteja sua Empresa com as<br />
+                <span className="text-[#FF6B35]">Melhores Condi&ccedil;&otilde;es em Seguros</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Proteja voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
+              <p className="text-xl md:text-2xl text-white/95 mb-8 max-w-4xl mx-auto leading-relaxed">
+                O <strong>SinHoRes Osasco</strong> oferece solu&ccedil;&otilde;es completas de prote&ccedil;&atilde;o para seu neg&oacute;cio:
+                <br />
+                <span className="text-lg md:text-xl">
+                  Planos de Sa&uacute;de • Seguros Empresariais • Seguros Patrimoniais • Seguros Odontol&oacute;gicos • RH Sem Risco
+                </span>
               </p>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-8 border border-white/20 inline-block w-full max-w-sm">
-                <p className="text-sm text-white/80 mb-2">A partir de apenas</p>
-                <div className="flex items-baseline justify-center">
-                  <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#FF6B35]">R$ 235</span>
-                  <span className="text-2xl md:text-3xl text-[#FF6B35]">,09</span>
-                  <span className="text-lg md:text-xl text-white/90 ml-2">/m&ecirc;s</span>
+              <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 md:p-8 max-w-5xl mx-auto border border-white/30">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="text-center">
+                    <Heart className="w-8 h-8 mx-auto mb-2 text-[#FF6B35]" />
+                    <div className="text-sm font-semibold">Planos de Sa&uacute;de</div>
+                  </div>
+                  <div className="text-center">
+                    <Flame className="w-8 h-8 mx-auto mb-2 text-[#FF6B35]" />
+                    <div className="text-sm font-semibold">Seguro Inc&ecirc;ndio</div>
+                  </div>
+                  <div className="text-center">
+                    <Shield className="w-8 h-8 mx-auto mb-2 text-[#FF6B35]" />
+                    <div className="text-sm font-semibold">Seguros Patrimoniais</div>
+                  </div>
+                  <div className="text-center">
+                    <Heart className="w-8 h-8 mx-auto mb-2 text-[#FF6B35]" />
+                    <div className="text-sm font-semibold">Seguro Odonto</div>
+                  </div>
+                  <div className="text-center">
+                    <Briefcase className="w-8 h-8 mx-auto mb-2 text-[#FF6B35]" />
+                    <div className="text-sm font-semibold">RH e Trabalhista</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Destaque Plano Sagrada Família */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 md:p-10 border-2 border-[#FF6B35] max-w-4xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <Badge className="bg-[#FF6B35] text-white border-none text-sm px-4 py-2">
+                  ⭐ Produto em Destaque
+                </Badge>
+              </div>
+              
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <ChefHat className="w-10 h-10 text-[#FF6B35]" />
+                  <h2 className="text-2xl md:text-3xl font-bold">
+                    Plano de Sa&uacute;de Sagrada Fam&iacute;lia
+                  </h2>
+                </div>
+                <p className="text-lg text-white/95 mb-4">
+                  Especializado para <strong>Bares e Restaurantes</strong>
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white/10 rounded-2xl p-6 text-center">
+                  <p className="text-sm text-white/80 mb-2">A partir de apenas</p>
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-4xl md:text-5xl font-bold text-[#FF6B35]">R$ 235</span>
+                    <span className="text-2xl text-[#FF6B35]">,09</span>
+                    <span className="text-lg text-white/90 ml-2">/m&ecirc;s</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    "Atendimento 24h",
+                    "Zero car&ecirc;ncia emerg&ecirc;ncias",
+                    "Rede credenciada completa",
+                    "Cobertura nacional"
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-3 bg-white/10 rounded-lg p-3">
+                      <CheckCircle2 className="w-5 h-5 text-[#FF6B35] flex-shrink-0" />
+                      <span className="text-sm font-medium">{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
                   onClick={scrollToForm}
@@ -103,51 +186,6 @@ export default function Home() {
                   Falar com Consultor
                 </Button>
               </div>
-            </div>
-
-            <div className="lg:w-5/12">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="relative"
-              >
-                <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="bg-[#FF6B35] rounded-full p-4">
-                      <ChefHat className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold">Especializado em</h3>
-                      <p className="text-white/80">Bares &amp; Restaurantes</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {[
-                      "Atendimento 24h de emergência",
-                      "Rede credenciada em Osasco",
-                      "Sem carência para urgências",
-                      "Cobertura completa"
-                    ].map((item, index) => (
-                      <div key={index} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-[#FF6B35] flex-shrink-0" />
-                        <span className="text-white">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-6 -right-6 bg-[#FF6B35] rounded-2xl p-4 shadow-xl">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-white fill-white" />
-                    <div>
-                      <div className="text-2xl font-bold text-white">4.9</div>
-                      <div className="text-xs text-white/80">Avalia&ccedil;&atilde;o</div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -186,11 +224,15 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
+            <Badge className="mb-4 bg-[#FF6B35] text-white text-base px-6 py-2">
+              SinHoRes Osasco - Prote&ccedil;&atilde;o Completa
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Nossos Produtos e Servi&ccedil;os
+              Todos os Seguros que sua Empresa Precisa
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Solu&ccedil;&otilde;es completas de seguros para o setor de alimenta&ccedil;&atilde;o
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Al&eacute;m do <strong>Plano de Sa&uacute;de Sagrada Fam&iacute;lia</strong>, protegemos sua empresa com seguros empresariais, 
+              patrimoniais, odontol&oacute;gicos e gest&atilde;o de RH sem riscos trabalhistas
             </p>
           </div>
 
