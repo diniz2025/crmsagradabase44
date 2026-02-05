@@ -194,35 +194,101 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-[#4DBABC] to-[#45B1B3] rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                <Heart className="w-8 h-8 text-white" />
+          {/* Destaque Principal - Plano de Saúde Sagrada Família */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8"
+          >
+            <div className="bg-gradient-to-br from-[#4DBABC] via-[#5AC0C2] to-[#45B1B3] rounded-3xl p-8 md:p-12 text-white shadow-2xl border-4 border-[#FF6B35] relative overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-[#FF6B35] hover:bg-[#E85A28] text-white border-none text-sm px-4 py-2">
+                  ⭐ Produto Principal
+                </Badge>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Plano de Sa&uacute;de</h3>
-              <p className="text-white/90 mb-6">
-                Cobertura completa para voc&ecirc; e sua equipe com o Plano Sagrada Fam&iacute;lia
-              </p>
-              <div className="flex flex-col gap-2">
-                <Link to={createPageUrl("RedeCredenciada")}>
-                  <Button className="w-full bg-white text-[#4DBABC] hover:bg-gray-100">
-                    Ver Rede Credenciada
-                  </Button>
-                </Link>
-                <Button 
-                  onClick={scrollToForm}
-                  className="w-full bg-[#FF6B35] hover:bg-[#E85A28] text-white"
-                >
-                  Contratar Agora
-                </Button>
-              </div>
-            </motion.div>
+              
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="bg-white/20 rounded-full w-20 h-20 flex items-center justify-center mb-6">
+                    <Heart className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                    Plano de Sa&uacute;de Sagrada Fam&iacute;lia
+                  </h3>
+                  <p className="text-xl text-white/95 mb-6 leading-relaxed">
+                    Cobertura completa para voc&ecirc; e sua equipe. O plano ideal para bares e restaurantes de Osasco e regi&atilde;o.
+                  </p>
+                  
+                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-6 mb-6">
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <div className="text-3xl font-bold text-[#FF6B35]">R$ 235,09</div>
+                        <div className="text-sm text-white/80">por mês</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-bold">24h</div>
+                        <div className="text-sm text-white/80">atendimento</div>
+                      </div>
+                    </div>
+                  </div>
 
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button 
+                      onClick={scrollToForm}
+                      size="lg"
+                      className="bg-[#FF6B35] hover:bg-[#E85A28] text-white text-lg px-8 shadow-xl"
+                    >
+                      Contratar Agora
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                    <Link to={createPageUrl("RedeCredenciada")} className="flex-1">
+                      <Button 
+                        size="lg"
+                        className="w-full bg-white text-[#4DBABC] hover:bg-gray-100 text-lg px-8"
+                      >
+                        Ver Rede Credenciada
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#FF6B35] flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold mb-1">Zero car&ecirc;ncia para emerg&ecirc;ncias</div>
+                      <div className="text-sm text-white/80">Atendimento imediato quando voc&ecirc; mais precisa</div>
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#FF6B35] flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold mb-1">Rede credenciada completa</div>
+                      <div className="text-sm text-white/80">Hospitais, cl&iacute;nicas e laborat&oacute;rios em Osasco</div>
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#FF6B35] flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold mb-1">Cobertura nacional</div>
+                      <div className="text-sm text-white/80">Seu plano funciona em todo o Brasil</div>
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#FF6B35] flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold mb-1">Especializado em bares e restaurantes</div>
+                      <div className="text-sm text-white/80">Condi&ccedil;&otilde;es especiais para o setor</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Outros Produtos */}
+          <div className="grid md:grid-cols-2 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
