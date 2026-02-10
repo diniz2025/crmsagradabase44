@@ -49,10 +49,10 @@ export default function Home() {
             <Shield className="w-10 h-10 flex-shrink-0" />
             <div>
               <h2 className="text-xl md:text-2xl font-bold">
-                SinHoRes Osasco, Alphaville e Regi&atilde;o
+                Clube de Benef&iacute;cios SinHoRes Osasco, Alphaville e Regi&atilde;o
               </h2>
               <p className="text-white/95 text-sm md:text-base">
-                Prote&ccedil;&atilde;o Completa para sua Empresa: Sa&uacute;de, Seguros Empresariais, Patrimoniais, Odontol&oacute;gicos e RH
+                Condi&ccedil;&otilde;es Exclusivas em Planos de Sa&uacute;de, Seguros Empresariais, Patrimoniais, Odontol&oacute;gicos e Gest&atilde;o de RH
               </p>
             </div>
           </div>
@@ -83,15 +83,15 @@ export default function Home() {
               </Badge>
               
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Proteja sua Empresa com as<br />
-                <span className="text-[#FF6B35]">Melhores Condi&ccedil;&otilde;es em Seguros</span>
+                Benef&iacute;cios Exclusivos do<br />
+                <span className="text-[#FF6B35]">Clube SinHoRes na Área de Seguros</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-white/95 mb-8 max-w-4xl mx-auto leading-relaxed">
-                O <strong>SinHoRes Osasco</strong> oferece solu&ccedil;&otilde;es completas de prote&ccedil;&atilde;o para seu neg&oacute;cio:
+                O <strong>Clube de Benef&iacute;cios SinHoRes Osasco</strong>, em parceria com a <strong>DCG Corretora</strong>, viabiliza condi&ccedil;&otilde;es imbat&iacute;veis:
                 <br />
                 <span className="text-lg md:text-xl">
-                  Planos de Sa&uacute;de • Seguros Empresariais • Seguros Patrimoniais • Seguros Odontol&oacute;gicos • RH Sem Risco
+                  Plano Sagrada Fam&iacute;lia • Tokio Marine • Porto Seguro • Seguros Odontol&oacute;gicos • DCG RH Sem Risco
                 </span>
               </p>
 
@@ -225,14 +225,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge className="mb-4 bg-[#FF6B35] text-white text-base px-6 py-2">
-              SinHoRes Osasco - Prote&ccedil;&atilde;o Completa
+              Clube de Benef&iacute;cios SinHoRes — Vantagens Exclusivas
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Todos os Seguros que sua Empresa Precisa
+              Condi&ccedil;&otilde;es Exclusivas em Todos os Seguros
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Al&eacute;m do <strong>Plano de Sa&uacute;de Sagrada Fam&iacute;lia</strong>, protegemos sua empresa com seguros empresariais, 
-              patrimoniais, odontol&oacute;gicos e gest&atilde;o de RH sem riscos trabalhistas
+              Como associado do <strong>SinHoRes Osasco</strong>, voc&ecirc; tem acesso a benef&iacute;cios diferenciados nos melhores produtos do mercado: 
+              <strong> Sagrada Fam&iacute;lia, Tokio Marine, Porto Seguro</strong> e mais, viabilizados pela <strong>DCG Corretora</strong>
             </p>
           </div>
 
@@ -394,10 +394,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Stethoscope className="w-16 h-16 mx-auto mb-6 text-[#FF6B35]" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Pronto para Proteger sua Equipe?
+            Aproveite os Benef&iacute;cios Exclusivos do Clube SinHoRes
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Junte-se a centenas de estabelecimentos em Osasco que j&aacute; confiam no Sagrada Fam&iacute;lia
+            Centenas de estabelecimentos em Osasco j&aacute; aproveitam condi&ccedil;&otilde;es diferenciadas
           </p>
           <Button 
             size="lg"
@@ -437,13 +437,17 @@ export default function Home() {
                   className="h-32 mb-4"
                 />
               </a>
-              <p className="text-sm">
-                Plano de sa&uacute;de especialmente desenvolvido para o setor de bares e restaurantes de Osasco e regi&atilde;o.
+              <p className="text-sm mb-4">
+                Clube de Benef&iacute;cios do SinHoRes Osasco, Alphaville e Regi&atilde;o, viabilizando condi&ccedil;&otilde;es exclusivas em seguros.
+              </p>
+              <p className="text-xs text-gray-500 italic">
+                Os produtos de seguros s&atilde;o fornecidos pelas respectivas operadoras (Sagrada Fam&iacute;lia, Tokio Marine, Porto Seguro). 
+                O SinHoRes viabiliza condi&ccedil;&otilde;es diferenciadas como benef&iacute;cio exclusivo aos associados, por meio da DCG Corretora.
               </p>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Precisa de Ajuda para Escolher?</h4>
-              <p className="text-sm mb-4">Nossa equipe está pronta para encontrar a melhor solução para seu negócio</p>
+              <p className="text-sm mb-4">Nossa equipe DCG está pronta para encontrar a melhor solução para seu negócio</p>
               <div className="space-y-2 text-sm">
                 <p>seguros@sinhoresseguros.com.br</p>
                 <p>(11) 99410-4891</p>
@@ -456,7 +460,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; 2025 Plano de Sa&uacute;de Sagrada Fam&iacute;lia. Todos os direitos reservados.</p>
+            <p>&copy; 2026 Clube de Benef&iacute;cios SinHoRes Osasco. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
