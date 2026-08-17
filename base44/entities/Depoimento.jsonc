@@ -1,0 +1,74 @@
+{
+  "name": "Depoimento",
+  "type": "object",
+  "properties": {
+    "nome_cliente": {
+      "type": "string",
+      "description": "Nome do cliente (pode ser apenas primeiro nome para privacidade)"
+    },
+    "empresa": {
+      "type": "string",
+      "description": "Nome do estabelecimento/empresa"
+    },
+    "cargo": {
+      "type": "string",
+      "description": "Cargo do cliente (ex: Propriet\u00e1rio, Gerente)"
+    },
+    "produto": {
+      "type": "string",
+      "enum": [
+        "plano_saude_sagrada_familia",
+        "odonto_group",
+        "telemedicina_infinity",
+        "seguro_empresarial_tokio",
+        "seguro_cyber_akad",
+        "outro"
+      ],
+      "description": "Produto/servi\u00e7o avaliado"
+    },
+    "depoimento": {
+      "type": "string",
+      "description": "Texto do depoimento"
+    },
+    "avaliacao": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Avalia\u00e7\u00e3o de 1 a 5 estrelas"
+    },
+    "foto_url": {
+      "type": "string",
+      "description": "URL da foto do cliente (opcional)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "aprovado",
+        "rejeitado"
+      ],
+      "default": "pendente",
+      "description": "Status de aprova\u00e7\u00e3o do depoimento"
+    },
+    "destaque": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se o depoimento aparece em destaque"
+    },
+    "data_aprovacao": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data de aprova\u00e7\u00e3o do depoimento"
+    },
+    "aprovado_por": {
+      "type": "string",
+      "description": "Email do admin que aprovou"
+    }
+  },
+  "required": [
+    "nome_cliente",
+    "produto",
+    "depoimento",
+    "avaliacao"
+  ]
+}

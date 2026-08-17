@@ -1,0 +1,76 @@
+{
+  "name": "ConteudoEducacional",
+  "type": "object",
+  "properties": {
+    "titulo": {
+      "type": "string",
+      "description": "T\u00edtulo do conte\u00fado educacional"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL amig\u00e1vel"
+    },
+    "categoria": {
+      "type": "string",
+      "enum": [
+        "prevencao_doencas",
+        "saude_ocupacional",
+        "guia_rede_credenciada",
+        "bem_estar",
+        "nutricao",
+        "seguranca_trabalho",
+        "faq"
+      ],
+      "description": "Categoria do conte\u00fado"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "artigo",
+        "dica",
+        "faq",
+        "guia"
+      ],
+      "default": "artigo",
+      "description": "Tipo de conte\u00fado"
+    },
+    "resumo": {
+      "type": "string",
+      "description": "Resumo curto do conte\u00fado"
+    },
+    "conteudo": {
+      "type": "string",
+      "description": "Conte\u00fado completo em markdown"
+    },
+    "imagem_url": {
+      "type": "string",
+      "description": "URL da imagem de destaque"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Tags separadas por v\u00edrgula"
+    },
+    "publicado": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se o conte\u00fado est\u00e1 publicado"
+    },
+    "destaque": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se aparece em destaque"
+    },
+    "visualizacoes": {
+      "type": "integer",
+      "default": 0,
+      "description": "N\u00famero de visualiza\u00e7\u00f5es"
+    }
+  },
+  "required": [
+    "titulo",
+    "slug",
+    "categoria",
+    "tipo",
+    "conteudo"
+  ]
+}

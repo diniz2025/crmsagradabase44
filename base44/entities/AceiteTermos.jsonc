@@ -1,0 +1,32 @@
+{
+  "name": "AceiteTermos",
+  "type": "object",
+  "properties": {
+    "usuario_email": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio que aceitou"
+    },
+    "versao_politica": {
+      "type": "string",
+      "default": "v1.0",
+      "description": "Vers\u00e3o da pol\u00edtica aceita"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP do usu\u00e1rio no momento do aceite"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Navegador e sistema operacional"
+    },
+    "aceito_em": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e hora do aceite"
+    }
+  },
+  "required": [
+    "usuario_email",
+    "versao_politica"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Vendedor",
+  "type": "object",
+  "properties": {
+    "nome": {
+      "type": "string",
+      "description": "Nome do vendedor"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email do vendedor"
+    },
+    "corretora_id": {
+      "type": "string",
+      "description": "ID da corretora a que pertence"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "supervisor",
+        "vendedor"
+      ],
+      "default": "vendedor",
+      "description": "Tipo de usu\u00e1rio"
+    },
+    "ativo": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se o vendedor est\u00e1 ativo"
+    }
+  },
+  "required": [
+    "nome",
+    "email",
+    "corretora_id"
+  ]
+}

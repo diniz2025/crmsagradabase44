@@ -1,0 +1,35 @@
+{
+  "name": "HistoricoStatus",
+  "type": "object",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "description": "ID do lead"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Lead",
+        "Qualificado",
+        "Proposta",
+        "Fechado",
+        "Descartado"
+      ],
+      "description": "Status do lead neste momento"
+    },
+    "data_mudanca": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data da mudan\u00e7a de status"
+    },
+    "vendedor": {
+      "type": "string",
+      "description": "Vendedor respons\u00e1vel"
+    }
+  },
+  "required": [
+    "lead_id",
+    "status",
+    "data_mudanca"
+  ]
+}

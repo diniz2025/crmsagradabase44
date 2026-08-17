@@ -1,0 +1,41 @@
+{
+  "name": "LembreteEnviado",
+  "type": "object",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "description": "ID do lead"
+    },
+    "automacao_id": {
+      "type": "string",
+      "description": "ID da automa\u00e7\u00e3o que gerou este lembrete"
+    },
+    "data_envio": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data em que o lembrete foi enviado"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "email",
+        "whatsapp"
+      ],
+      "description": "Tipo de lembrete enviado"
+    },
+    "sucesso": {
+      "type": "boolean",
+      "description": "Se o envio foi bem sucedido"
+    },
+    "mensagem": {
+      "type": "string",
+      "description": "Conte\u00fado da mensagem enviada"
+    }
+  },
+  "required": [
+    "lead_id",
+    "automacao_id",
+    "data_envio",
+    "tipo"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "ConfigCRM",
+  "type": "object",
+  "properties": {
+    "chave": {
+      "type": "string",
+      "description": "Chave de configura\u00e7\u00e3o (ex: script_whatsapp)"
+    },
+    "valor": {
+      "type": "string",
+      "description": "Valor da configura\u00e7\u00e3o"
+    }
+  },
+  "required": [
+    "chave",
+    "valor"
+  ]
+}
